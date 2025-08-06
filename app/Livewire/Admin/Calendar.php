@@ -1,0 +1,158 @@
+<?php
+
+namespace App\Livewire\Admin;
+
+use Illuminate\Support\Collection;
+use Livewire\Attributes\On;
+use Livewire\Component;
+use Carbon\Carbon;
+use App\Models\Prestation;
+
+class Calendar extends Component
+{
+    public  Carbon $currentDate;
+    public string $viewMode = 'month';
+    protected $listeners = [
+        'refreshCalendar' => '$refresh',
+    ];
+
+
+    public function mount(): void
+    {
+        $this->currentDate = Carbon::now();
+    }
+
+    /**
+     * Propriété calculée pour récupérer les prestations de la période actuellement affichée.
+     * Inclut la relation 'artiste' pour l'affichage des informations de l'artiste.
+     *
+     * @return Collection
+     */
+    public function getPrestationsForCurrentPeriodProperty(): Collection
+    {
+        $query = Prestation::query();
+
+        // Détermine la période de début et de fin en fonction du mode de vue
+        switch ($this->viewMode) {
+            case 'month':
+                $start = $this->currentDate->copy()->startOfMonth()->startOfDay();
+                $end = $this->currentDate->copy()->endOfMonth()->endOfDay();
+                break;
+            case 'day':
+                $start = $this->currentDate->copy()->startOfDay();
+                $end = $this->currentDate->copy()->endOfDay();
+                break;
+            default:
+                return collect();
+        }
+
+        return $query->whereBetween('date_prestation', [$start, $end])
+            ->with('artiste')
+            ->orderBy('date_prestation')
+            ->orderBy('heure_debut_prestation')
+            ->get();
+    }
+
+
+    public function goToPrevious(): void
+    {
+        switch ($this->viewMode) {
+            case 'month':
+                $this->currentDate->subMonth();
+                break;
+            case 'day':
+                $this->currentDate->subDay();
+                break;
+        }
+        // Crée une nouvelle instance de Carbon pour forcer Livewire à détecter le changement
+        $this->currentDate = $this->currentDate->copy();
+    }
+
+    /**
+     * Passe à la période suivante (mois ou jour) en fonction du mode de vue.
+     */
+    public function goToNext(): void
+    {
+        switch ($this->viewMode) {
+            case 'month':
+                $this->currentDate->addMonth();
+                break;
+            case 'day':
+                $this->currentDate->addDay();
+                break;
+        }
+        // Crée une nouvelle instance de Carbon pour forcer Livewire à détecter le changement
+        $this->currentDate = $this->currentDate->copy();
+    }
+
+    /**
+     * Passe à l'année précédente (uniquement en mode mois).
+     */
+    public function goToPreviousYear(): void
+    {
+        if ($this->viewMode === 'month') {
+            $this->currentDate->subYear();
+            $this->currentDate = $this->currentDate->copy();
+        }
+    }
+
+    /**
+     * Passe à l'année suivante (uniquement en mode mois).
+     */
+    public function goToNextYear(): void
+    {
+        if ($this->viewMode === 'month') {
+            $this->currentDate->addYear();
+            $this->currentDate = $this->currentDate->copy();
+        }
+    }
+
+    /**
+     * Définit le mode de vue du calendrier ('month' ou 'day').
+     * Peut également définir une date spécifique si le mode est 'day'.
+     *
+     * @param string $mode Le mode de vue souhaité.
+     * @param string|null $dateOptionnelle Date spécifique si passage en mode 'day' (format Y-m-d).
+     */
+
+    #[On('set-view-mode')]
+    public function setViewMode(string $mode, string $dateOptionnelle = null): void
+    {
+        $this->viewMode = $mode;
+        if ($mode === 'day' && $dateOptionnelle) {
+            $this->currentDate = Carbon::parse($dateOptionnelle);
+        } else {
+            // Si on change de mode sans date spécifique, ou si on repasse en mois,
+            // on force le re-rendu avec la date actuelle du composant.
+            $this->currentDate = $this->currentDate->copy();
+        }
+    }
+
+    /**
+     * Propriété calculée pour obtenir le titre de la période actuelle en français.
+     *
+     * @return string
+     */
+    public function getCurrentPeriodTitleProperty(): string
+    {
+        switch ($this->viewMode) {
+            case 'month':
+                return $this->currentDate->locale('fr')->monthName . ' ' . $this->currentDate->year;
+            case 'day':
+                return $this->currentDate->locale('fr')->isoFormat('dddd D MMMM YYYY');
+            default:
+                return '';
+        }
+    }
+
+    public function openPrestationFormModal(): void
+    {
+        $this->dispatch('open-prestation-form');
+    }
+
+
+    public function render(): \Illuminate\Contracts\View\View
+    {
+        return view('livewire.admin.calendar');
+    }
+}
