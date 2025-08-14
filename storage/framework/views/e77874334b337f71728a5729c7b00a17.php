@@ -68,7 +68,7 @@ $__split = function ($name, $params = []) {
 };
 [$__name, $__params] = $__split('admin.calendar.month-view', [
             'currentDate' => $currentDate,
-            'prestations' => $this->prestationsForCurrentPeriod,
+            'prestations' => $prestations,
             ]);
 
 $__html = app('livewire')->mount($__name, $__params, 'month-view-' . $currentDate->format('Y-m-d') . '-' . $viewMode, $__slots ?? [], get_defined_vars());
@@ -89,7 +89,7 @@ $__split = function ($name, $params = []) {
 };
 [$__name, $__params] = $__split('admin.calendar.day-view', [
             'currentDate' => $currentDate,
-            'prestations' => $this->prestationsForCurrentPeriod,
+            'prestations' => $prestations,
             ]);
 
 $__html = app('livewire')->mount($__name, $__params, 'day-view-' . $currentDate->format('Y-m-d') . '-' . $viewMode, $__slots ?? [], get_defined_vars());

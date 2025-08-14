@@ -11,47 +11,62 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
-use Parsedown;
 
 class GenerateContractContent implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    protected $prestationId;
-    protected $componentId;
+    public int $timeout = 120;
+    protected string|int $prestationId;
+    protected string|int $userId;
 
-    public $timeout = 200;
-
-    public function __construct($prestationId, $componentId)
+    public function __construct(string|int $prestationId, string|int $userId)
     {
         $this->prestationId = $prestationId;
-        $this->componentId = $componentId;
+        $this->userId = $userId;
     }
 
-    public function handle(): void
+    public function handle(ContractContentGenerator $generator): void
     {
         try {
             $prestation = Prestation::findOrFail($this->prestationId);
-            $generator = new ContractContentGenerator();
-            $markdownContent = $generator->generateContent($prestation);
-            $parsedown = new Parsedown();
-            $parsedown->setSafeMode(true);
-            $htmlContent = $parsedown->text($markdownContent);
-            $htmlContent = empty(trim($htmlContent)) ? '<p>Contenu généré vide</p>' : $htmlContent;
+            $result = $generator->generateContent($prestation);
 
-            Log::info('Contenu IA généré et converti', [
-                'prestationId' => $this->prestationId,
-                'markdown_length' => strlen($markdownContent),
+            if (!$result['success']) {
+                Log::error('Échec de la génération du contrat', [
+                    'prestation_id' => $this->prestationId,
+                    'user_id' => $this->userId,
+                    'error' => $result['error'],
+                ]);
+                event(new ContractContentGenerationFailed(['error' => $result['error']], $this->prestationId, $this->userId));
+                return;
+            }
+
+            $htmlContent = $result['html'] ?: '<p>Contenu généré vide</p>';
+            $cacheKey = 'contract_content_' . $this->prestationId . '_' . $this->userId . '_' . time();
+            Cache::put($cacheKey, $htmlContent, now()->addMinutes(10));
+
+           /* Log::info('Contenu IA généré et stocké dans le cache', [
+                'prestation_id' => $this->prestationId,
+                'user_id' => $this->userId,
+                'markdown_length' => strlen($result['markdown']),
                 'html_length' => strlen($htmlContent),
-                'html_content' => substr($htmlContent, 0, 200)
-            ]);
+                'cache_key' => $cacheKey,
+                'html_content' => substr($htmlContent, 0, 200),
+            ]);*/
 
-            event(new ContractContentGenerated($htmlContent, $this->componentId));
-
+            event(new ContractContentGenerated($cacheKey, $this->prestationId, $this->userId));
         } catch (\Exception $e) {
-            Log::error('Erreur dans le job de génération', ['error' => $e->getMessage(), 'prestationId' => $this->prestationId]);
-            event(new ContractContentGenerationFailed($e->getMessage(), $this->componentId));
+            Log::error('Erreur lors du traitement du job GenerateContractContent', [
+                'prestation_id' => $this->prestationId,
+                'user_id' => $this->userId,
+                'error' => $e->getMessage(),
+                'code' => $e->getCode(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            event(new ContractContentGenerationFailed(['error' => $e->getMessage()], $this->prestationId, $this->userId));
         }
     }
 }

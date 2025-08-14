@@ -7,7 +7,7 @@
 $__split = function ($name, $params = []) {
     return [$name, $params];
 };
-[$__name, $__params] = $__split('admin.calendar');
+[$__name, $__params] = $__split('admin.calendar.calendar');
 
 $__html = app('livewire')->mount($__name, $__params, 'lw-86247629-0', $__slots ?? [], get_defined_vars());
 

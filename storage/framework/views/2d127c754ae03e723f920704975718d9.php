@@ -29,12 +29,11 @@
                 <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
 
                 <form wire:submit.prevent="savePrestation" class="space-y-4">
-                    <!-- Section Informations Générales -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label for="artiste_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Sélectionner un artiste <span class="text-red-500">*</span></label>
-                            <select id="artiste_id" wire:model.live="form.artiste_id" 
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 px-3 py-2 transition-colors transition-shadow duration-200 ease-in-out">
+                            <select id="artiste_id" wire:model.live="form.artiste_id"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 px-3 py-2 transition-colors transition-shadow duration-200 ease-in-out">
                                 <option value="">-- Sélectionner un artiste --</option>
                                 <!--[if BLOCK]><![endif]--><?php $__currentLoopData = $artistes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $artiste): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                     <option value="<?php echo e($artiste->id); ?>"><?php echo e($artiste->nom); ?></option>
@@ -54,7 +53,7 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                             <input type="text" id="display_nom_artiste_groupe"
                                    value="<?php echo e($form['artiste_id'] ? ($artistes->firstWhere('id', $form['artiste_id'])->nom ?? '') : ''); ?>"
                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm bg-gray-100 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 px-3 py-2 cursor-not-allowed"
-                                   readonly> 
+                                   readonly>
                         </div>
                         <div>
                             <label for="nom_structure_contractante" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nom de la structure contractante / organisateur <span class="text-red-500">*</span></label>
@@ -88,7 +87,6 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
 
                     <hr class="border-gray-200 dark:border-gray-700 my-4">
 
-                    <!-- Section Détails de la prestation -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label for="date_prestation" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Date de la prestation <span class="text-red-500">*</span></label>
@@ -176,7 +174,6 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
 
                     <hr class="border-gray-200 dark:border-gray-700 my-4">
 
-                    <!-- Section Conditions financières -->
                     <h4 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">Conditions financières</h4>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
@@ -234,7 +231,6 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
 
                     <hr class="border-gray-200 dark:border-gray-700 my-4">
 
-                    <!-- Section Spécificités techniques -->
                     <h4 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">Spécificités techniques</h4>
                     <div class="space-y-4">
                         <div>
@@ -256,7 +252,6 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
 
                     <hr class="border-gray-200 dark:border-gray-700 my-4">
 
-                    <!-- Section Communication et promotion -->
                     <h4 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">Communication et promotion</h4>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
@@ -287,7 +282,6 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
 
                     <hr class="border-gray-200 dark:border-gray-700 my-4">
 
-                    <!-- Section Clauses contractuelles -->
                     <h4 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">Clauses contractuelles</h4>
                     <div class="space-y-4">
                         <div>
@@ -318,7 +312,6 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
 
                     <hr class="border-gray-200 dark:border-gray-700 my-4">
 
-                    <!-- Section Optionnel et Statut -->
                     <h4 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">Statut et Notes</h4>
                     <div class="space-y-4">
                         <div>
@@ -332,7 +325,6 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 px-3 py-2 transition-colors transition-shadow duration-200 ease-in-out">
                                 <option value="en cours de redaction">En cours de rédaction</option>
                                 <option value="redigee">Rédigée</option>
-                                
                             </select>
                             <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['form.status'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
@@ -345,16 +337,24 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                         </div>
                     </div>
 
-                    <div class="mt-6 flex justify-end space-x-3">
-                        <button type="button" wire:click="closeModal"
-                                class="px-5 py-2 rounded-md bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors duration-200">
-                            Annuler
-                        </button>
-                        <button type="submit"
-                                class="px-5 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
-                            <?php echo e($editingPrestationId ? 'Mettre à jour' : 'Créer'); ?>
+                    <div class="mt-6 flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-3">
+                        <div wire:loading.remove>
+                            <button type="button" wire:click="closeModal"
+                                    class="w-full sm:w-auto px-5 py-2 rounded-md bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors duration-200">
+                                Annuler
+                            </button>
+                            <button type="submit"
+                                    class="w-full sm:w-auto px-5 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
+                                <?php echo e($editingPrestationId ? 'Mettre à jour' : 'Créer'); ?>
 
-                        </button>
+                            </button>
+                        </div>
+                        <div wire:loading class="flex items-center justify-center w-full sm:w-auto">
+                            <svg class="animate-spin h-5 w-5 text-gray-500 dark:text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        </div>
                     </div>
                 </form>
             </div>

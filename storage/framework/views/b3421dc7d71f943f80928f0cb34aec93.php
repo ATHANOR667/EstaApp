@@ -5,52 +5,53 @@
         <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
             <!-- Navigation (Année et Mois/Jour) -->
             <div class="flex items-center space-x-2">
-                @if ($viewMode === 'month')
-                    {{-- Bouton Année Précédente --}}
+                <!--[if BLOCK]><![endif]--><?php if($viewMode === 'month'): ?>
+                    
                     <button wire:click="goToPreviousYear" class="p-2 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors duration-200">
                         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" /></svg>
                     </button>
-                @endif
-                {{-- Bouton Période Précédente (Mois ou Jour) --}}
+                <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
+                
                 <button wire:click="goToPrevious" class="p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                     </svg>
                 </button>
-                {{-- Titre de la période actuelle --}}
+                
                 <h2 class="text-2xl font-semibold text-gray-800 dark:text-gray-100 text-center capitalize">
-                    {{ $this->currentPeriodTitle }}
+                    <?php echo e($this->currentPeriodTitle); ?>
+
                 </h2>
-                {{-- Bouton Période Suivante (Mois ou Jour) --}}
+                
                 <button wire:click="goToNext" class="p-2 rounded-full bg-blue-500 text-white hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                     </svg>
                 </button>
-                @if ($viewMode === 'month')
-                    {{-- Bouton Année Suivante --}}
+                <!--[if BLOCK]><![endif]--><?php if($viewMode === 'month'): ?>
+                    
                     <button wire:click="goToNextYear" class="p-2 rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors duration-200">
                         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M6 5l7 7-7 7" /></svg>
                     </button>
-                @endif
+                <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
             </div>
 
             <!-- Sélecteur de vue et bouton Ajouter Prestation -->
             <div class="flex flex-wrap items-center gap-2">
-                {{-- Sélecteur de mode de vue --}}
+                
                 <div class="flex space-x-2 bg-gray-100 dark:bg-gray-700 p-1 rounded-full shadow-inner">
                     <button wire:click="setViewMode('month')"
                             class="px-4 py-2 rounded-full text-sm font-medium transition-all duration-200
-                        {{ $viewMode === 'month' ? 'bg-blue-600 text-white shadow' : 'text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600' }}">
+                        <?php echo e($viewMode === 'month' ? 'bg-blue-600 text-white shadow' : 'text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600'); ?>">
                         Mois
                     </button>
                     <button wire:click="setViewMode('day')"
                             class="px-4 py-2 rounded-full text-sm font-medium transition-all duration-200
-                        {{ $viewMode === 'day' ? 'bg-blue-600 text-white shadow' : 'text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600' }}">
+                        <?php echo e($viewMode === 'day' ? 'bg-blue-600 text-white shadow' : 'text-gray-700 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600'); ?>">
                         Jour
                     </button>
                 </div>
-                {{-- Bouton Ajouter Prestation --}}
+                
                 <button wire:click="openPrestationFormModal"
                         class="ml-4 px-4 py-2 rounded-md bg-green-500 text-white hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors duration-200">
                     + Ajouter Prestation
@@ -59,37 +60,142 @@
         </div>
 
         <!-- Contenu du calendrier basé sur le mode de vue (appel des composants enfants) -->
-        @if ($viewMode === 'month')
-            {{-- Affiche la vue mensuelle du calendrier --}}
-            @livewire('admin.calendar.month-view', [
+        <!--[if BLOCK]><![endif]--><?php if($viewMode === 'month'): ?>
+            
+            <?php
+$__split = function ($name, $params = []) {
+    return [$name, $params];
+};
+[$__name, $__params] = $__split('admin.calendar.view-mode.month-view', [
             'currentDate' => $currentDate,
-            'prestations' => $this->prestationsForCurrentPeriod,
-            ], key('month-view-' . $currentDate->format('Y-m-d') . '-' . $viewMode))
-        @elseif ($viewMode === 'day')
-            {{-- Affiche la vue journalière du calendrier --}}
-            @livewire('admin.calendar.day-view', [
+            'prestations' => $prestations,
+            ]);
+
+$__html = app('livewire')->mount($__name, $__params, 'month-view-' . $currentDate->format('Y-m-d') . '-' . $viewMode, $__slots ?? [], get_defined_vars());
+
+echo $__html;
+
+unset($__html);
+unset($__name);
+unset($__params);
+unset($__split);
+if (isset($__slots)) unset($__slots);
+?>
+        <?php elseif($viewMode === 'day'): ?>
+            
+            <?php
+$__split = function ($name, $params = []) {
+    return [$name, $params];
+};
+[$__name, $__params] = $__split('admin.calendar.view-mode.day-view', [
             'currentDate' => $currentDate,
-            'prestations' => $this->prestationsForCurrentPeriod,
-            ], key('day-view-' . $currentDate->format('Y-m-d') . '-' . $viewMode))
-        @endif
+            'prestations' => $prestations,
+            ]);
+
+$__html = app('livewire')->mount($__name, $__params, 'day-view-' . $currentDate->format('Y-m-d') . '-' . $viewMode, $__slots ?? [], get_defined_vars());
+
+echo $__html;
+
+unset($__html);
+unset($__name);
+unset($__params);
+unset($__split);
+if (isset($__slots)) unset($__slots);
+?>
+        <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
 
         <!-- Modales (appel des composants enfants) -->
 
 
-        {{-- Modale des détails de prestation --}}
-        @livewire('admin.calendar.prestation-details-modal')
+        
+        <?php
+$__split = function ($name, $params = []) {
+    return [$name, $params];
+};
+[$__name, $__params] = $__split('admin.calendar.prestation.prestation-details-modal');
 
-        {{-- Modale du formulaire de prestation (création/édition) --}}
-        @livewire('admin.calendar.prestation-form-modal')
+$__html = app('livewire')->mount($__name, $__params, 'lw-2931593000-0', $__slots ?? [], get_defined_vars());
 
-        {{-- Modale pour la liste des contrats d'une prestation --}}
-        @livewire('admin.calendar.contrat-list-modal')
+echo $__html;
 
-        {{-- Modale pour le formulaire de contrat (création/édition) --}}
-        @livewire('admin.calendar.contrat-form-modal')
+unset($__html);
+unset($__name);
+unset($__params);
+unset($__split);
+if (isset($__slots)) unset($__slots);
+?>
 
-        {{-- Modale pour le formulaire d'envoi du contrat  --}}
-        @livewire('admin.calendar.docu-sign-send-modal')
+        
+        <?php
+$__split = function ($name, $params = []) {
+    return [$name, $params];
+};
+[$__name, $__params] = $__split('admin.calendar.prestation.prestation-form-modal');
+
+$__html = app('livewire')->mount($__name, $__params, 'lw-2931593000-1', $__slots ?? [], get_defined_vars());
+
+echo $__html;
+
+unset($__html);
+unset($__name);
+unset($__params);
+unset($__split);
+if (isset($__slots)) unset($__slots);
+?>
+
+        
+        <?php
+$__split = function ($name, $params = []) {
+    return [$name, $params];
+};
+[$__name, $__params] = $__split('admin.calendar.contrat.contrat-list-modal');
+
+$__html = app('livewire')->mount($__name, $__params, 'lw-2931593000-2', $__slots ?? [], get_defined_vars());
+
+echo $__html;
+
+unset($__html);
+unset($__name);
+unset($__params);
+unset($__split);
+if (isset($__slots)) unset($__slots);
+?>
+
+        
+        <?php
+$__split = function ($name, $params = []) {
+    return [$name, $params];
+};
+[$__name, $__params] = $__split('admin.calendar.contrat.contrat-form-modal');
+
+$__html = app('livewire')->mount($__name, $__params, 'lw-2931593000-3', $__slots ?? [], get_defined_vars());
+
+echo $__html;
+
+unset($__html);
+unset($__name);
+unset($__params);
+unset($__split);
+if (isset($__slots)) unset($__slots);
+?>
+
+        
+        <?php
+$__split = function ($name, $params = []) {
+    return [$name, $params];
+};
+[$__name, $__params] = $__split('admin.calendar.contrat.docu-sign-send-modal');
+
+$__html = app('livewire')->mount($__name, $__params, 'lw-2931593000-4', $__slots ?? [], get_defined_vars());
+
+echo $__html;
+
+unset($__html);
+unset($__name);
+unset($__params);
+unset($__split);
+if (isset($__slots)) unset($__slots);
+?>
     </div>
 
     <style>
@@ -122,3 +228,4 @@
 
 
 </div>
+<?php /**PATH C:\Users\MARCAU\PhpstormProjects\EstaApp\resources\views/livewire/admin/calendar/calendar.blade.php ENDPATH**/ ?>

@@ -4,25 +4,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Admin Panel</title>
-
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
     @livewireScripts
+    <title>@yield('title')</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
-            theme: {
-                extend: {
-
-                },
-            }
         }
     </script>
 
-
-
-    <title>@yield('title')</title>
 </head>
 <body class="h-full bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300 ease-in-out flex flex-col min-h-screen font-sans antialiased">
 

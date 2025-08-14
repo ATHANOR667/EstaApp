@@ -1,12 +1,10 @@
 <?php
 
-namespace App\Livewire\Admin\Calendar;
+namespace App\Livewire\Admin\Calendar\Prestation;
 
+use App\Models\Prestation;
 use Livewire\Attributes\On;
 use Livewire\Component;
-use Carbon\Carbon;
-use App\Models\Prestation;
-use Illuminate\Support\Collection;
 
 class PrestationDetailsModal extends Component
 {
@@ -31,7 +29,7 @@ class PrestationDetailsModal extends Component
     public function render(): \Illuminate\Contracts\View\View
     {
         $this->loadPrestationDetails();
-        return view('livewire.admin.calendar.prestation-details-modal');
+        return view('livewire.admin.calendar.prestation.prestation-details-modal');
     }
 
     public function updated($propertyName): void
@@ -39,7 +37,15 @@ class PrestationDetailsModal extends Component
         if ($propertyName === 'showModal' && $this->showModal) {
             $this->loadPrestationDetails();
         }
-        if (($propertyName === 'selectedDate' || $propertyName === 'selectedPrestationId') && $this->showModal) {
+        if
+        (
+            (
+                $propertyName === 'selectedDate' ||
+                $propertyName === 'selectedPrestationId'
+            ) &&
+            $this->showModal
+        )
+        {
             $this->loadPrestationDetails();
         }
     }
@@ -47,8 +53,10 @@ class PrestationDetailsModal extends Component
     private function loadPrestationDetails(): void
     {
         if ($this->selectedPrestationId) {
-            $this->prestation = Prestation::with(['artiste', 'contrats'])->findOrFail($this->selectedPrestationId);
-            $this->hasAcceptedContrat = $this->prestation->contrats->where('status', 'accepté')->isNotEmpty();
+            $this->prestation = Prestation::with(['artiste', 'contrats'])
+                ->findOrFail($this->selectedPrestationId);
+            $this->hasAcceptedContrat = $this->prestation->contrats
+                ->where('status', 'accepté')->isNotEmpty();
         } else {
             $this->prestation = new Prestation();
             $this->hasAcceptedContrat = false;
@@ -75,15 +83,15 @@ class PrestationDetailsModal extends Component
     {
         try {
 
-            if ($this->prestation->contrats->where('status', 'accepté')->isNotEmpty()) {
-                session()->flash('error', 'Impossible de supprimer cette prestation : elle a des contrats acceptés.');
+            if ($this->prestation->contrats->where('status', '!=','draft')->isNotEmpty()) {
+                session()->flash('error', 'Impossible de supprimer cette prestation : elle a un ou plusieurs contrats sortis de la corbeille.');
                 return;
             }
 
             $this->prestation->delete();
+            $this->dispatch('refreshCalendar');
             $this->closeModal();
             session()->flash('success', 'Prestation supprimée avec succès !');
-            $this->dispatch('refreshCalendar');
         } catch (\Exception $e) {
             session()->flash('error', 'Une erreur est survenue lors de la suppression : ' . $e->getMessage());
         }    }

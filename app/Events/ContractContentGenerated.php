@@ -2,8 +2,8 @@
 
 namespace App\Events;
 
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
@@ -12,17 +12,29 @@ class ContractContentGenerated implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $content;
-    public $componentId;
+    public string $cacheKey;
+    public int $prestationId;
+    public int $userId;
 
-    public function __construct(string $content, string $componentId)
+    public function __construct(string $cacheKey, int $prestationId, int $userId)
     {
-        $this->content = $content;
-        $this->componentId = $componentId;
+        $this->cacheKey = $cacheKey;
+        $this->prestationId = $prestationId;
+        $this->userId = $userId;
     }
 
-    public function broadcastOn(): Channel
+    public function broadcastOn(): array
     {
-        return new Channel('contrat-form-modal.' . $this->componentId);
+        return [
+            new PrivateChannel('contrat-form-modal.' . $this->userId),
+        ];
+    }
+
+    public function broadcastWith(): array
+    {
+        return [
+            'cacheKey' => $this->cacheKey,
+            'prestationId' => $this->prestationId,
+        ];
     }
 }

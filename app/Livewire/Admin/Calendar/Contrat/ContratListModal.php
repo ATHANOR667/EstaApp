@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Livewire\Admin\Calendar;
+namespace App\Livewire\Admin\Calendar\Contrat;
 
+use App\Models\Contrat;
+use App\Models\Prestation;
 use Barryvdh\DomPDF\Facade\Pdf;
+use DocuSign\eSign\Client\ApiClient;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
-use Livewire\Component;
-use Livewire\Attributes\On;
-use App\Models\Prestation;
-use App\Models\Contrat;
-use SimpleSoftwareIO\QrCode\Facades\QrCode;
-use DocuSign\eSign\Client\ApiClient;
 use Illuminate\Support\Facades\URL;
+use Livewire\Attributes\On;
+use Livewire\Component;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class ContratListModal extends Component
 {
@@ -23,7 +23,7 @@ class ContratListModal extends Component
     public string $customMessage;
 
     #[On('open-contrat-list')]
-    public function openModal(int $prestationId): void
+    public function openModal(int $prestationId = null): void
     {
         if (!$prestationId) {
             session()->flash('error', 'Aucune prestation sélectionnée.');
@@ -52,8 +52,12 @@ class ContratListModal extends Component
     public function loadContrats(): void
     {
         if ($this->prestationId) {
-            $this->prestation = Prestation::with('contrats', 'artiste')->findOrFail($this->prestationId);
-            $this->contrats = $this->prestation->contrats()->orderBy('created_at', 'desc')->get();
+            $this->prestation = Prestation::with('contrats', 'artiste')
+                ->findOrFail($this->prestationId);
+            $this->contrats = $this->prestation
+                ->contrats()
+                ->orderBy('created_at', 'desc')
+                ->get();
         } else {
             $this->contrats = collect();
             $this->prestation = new Prestation();
@@ -110,7 +114,7 @@ class ContratListModal extends Component
         $this->dispatch('send-contrat', id: $contratId);
     }
 
-    public function downloadPdf(Contrat $contrat): \Symfony\Component\HttpFoundation\StreamedResponse
+    public function downloadPdf(Contrat $contrat): \Symfony\Component\HttpFoundation\StreamedResponse|null
     {
         try {
             if ($contrat->status === 'signed' && $contrat->docusign_envelope_id) {
@@ -154,7 +158,7 @@ class ContratListModal extends Component
         } catch (Exception $e) {
             session()->flash('error', 'Problème interne lors de la génération de votre PDF.');
             Log::error('Erreur lors de la génération/récupération du PDF', ['error' => $e->getMessage()]);
-            throw $e;
+            return null ;
         }
     }
 
@@ -166,6 +170,6 @@ class ContratListModal extends Component
 
     public function render(): \Illuminate\Contracts\View\View
     {
-        return view('livewire.admin.calendar.contrat-list-modal');
+        return view('livewire.admin.calendar.contrat.contrat-list-modal');
     }
 }

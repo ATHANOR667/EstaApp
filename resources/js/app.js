@@ -1,23 +1,29 @@
-import './bootstrap';
+import axios from 'axios';
+window.axios = axios;
+window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
-document.addEventListener('DOMContentLoaded', () => {
-    const canvas = document.querySelector('#signature-pad');
-    if (canvas) {
-        const signaturePad = new SignaturePad(canvas);
+import Echo from 'laravel-echo';
+import Pusher from 'pusher-js';
+window.Pusher = Pusher;
 
-        document.querySelector('#clear-signature').addEventListener('click', () => {
-            signaturePad.clear();
-        });
+const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
 
-        document.querySelector('#save-signature').addEventListener('click', () => {
-            const dataUrl = signaturePad.toDataURL('image/png');
-            Livewire.emit('signatureSaved', dataUrl);
-        });
+window.Echo = new Echo({
+    broadcaster: 'pusher',
+    key: import.meta.env.VITE_PUSHER_APP_KEY,
+    cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
+    wsHost: import.meta.env.VITE_PUSHER_HOST || 'ws-eu.pusher.com',
+    wsPort: import.meta.env.VITE_PUSHER_PORT || 443,
+    wssPort: import.meta.env.VITE_PUSHER_PORT || 443,
+    forceTLS: (import.meta.env.VITE_PUSHER_SCHEME || 'https') === 'https',
+    encrypted: true,
+    disableStats: true,
+    enabledTransports: ['ws', 'wss'],
+    authEndpoint: '/broadcasting/auth',
+    auth: {
+        headers: {
+            'X-CSRF-TOKEN': csrfToken
+        }
     }
 });
 
-import SignaturePad from 'signature-pad';
-import Quill from 'quill';
-
-window.Quill = Quill;
-window.SignaturePad = SignaturePad;

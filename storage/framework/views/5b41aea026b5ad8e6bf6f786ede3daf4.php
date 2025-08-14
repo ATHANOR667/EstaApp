@@ -9,6 +9,17 @@
             font-size: 14px;
             line-height: 1.6;
             color: #000;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            word-break: break-all;
+        }
+
+        /* On force aussi la coupure dans tout le contenu issu de Quill */
+        .content,
+        .content * {
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            word-break: break-all;
         }
 
         /* Conteneur principal du header */
@@ -47,7 +58,7 @@
             display: block;
         }
 
-        /* Partie centrale (30%) - Espace vide */
+        /* Partie centrale (30%) */
         .center-box {
             width: 30%;
         }
@@ -181,7 +192,8 @@
                 <div class="stamp empty">&nbsp;</div>
             <?php endif; ?>
             <div class="label">Artiste / Représentant</div>
-            <span style="visibility: hidden;">/signature-artiste/</span>
+            <span style="opacity: 0; font-size: 0;">/signature-artiste/</span>
+            <span style="opacity: 0; font-size: 0;">/date-artiste/</span>
         </div>
 
         <div class="signature-box">
@@ -193,10 +205,12 @@
                 <div class="stamp empty">&nbsp;</div>
             <?php endif; ?>
             <div class="label">Contractant</div>
-            <span style="visibility: hidden;">/signature-contractant/</span>
+            <span style="opacity: 0; font-size: 0;">/signature-contractant/</span>
+            <span style="opacity: 0; font-size: 0;">/date-contractant/</span>
         </div>
     </div>
 </div>
+
 </body>
 </html>
 <?php /**PATH C:\Users\MARCAU\PhpstormProjects\EstaApp\resources\views/pdf/view_contract.blade.php ENDPATH**/ ?>

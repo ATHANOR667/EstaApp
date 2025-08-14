@@ -12,8 +12,7 @@ class Contrat extends Model
 
     const STATUSES = [
         'draft' => 'Brouillon',
-        'signed_by_artist' => 'Signé par l’artiste',
-        'pending_organizer' => 'En attente de l’organisateur',
+        'pending' => 'En attente de l’organisateur',
         'signed' => 'Signé',
         'rejected' => 'Rejeté',
     ];

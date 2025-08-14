@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Livewire\Admin\Calendar;
+namespace App\Livewire\Admin\Calendar\Prestation;
 
+use App\Models\Artiste;
+use App\Models\Prestation;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Livewire\Attributes\On;
 use Livewire\Component;
-use Carbon\Carbon;
-use App\Models\Prestation;
-use App\Models\Artiste;
 
 class PrestationFormModal extends Component
 {
@@ -129,7 +129,7 @@ class PrestationFormModal extends Component
             'form.nom_structure_contractante' => 'required|string|max:255',
             'form.date_prestation' => 'required|date',
             'form.heure_debut_prestation' => 'required|date_format:H:i',
-            'form.heure_fin_prevue' => 'required|date_format:H:i|after:form.heure_debut_prestation',
+            //'form.heure_fin_prevue' => 'required|date_format:H:i|after:form.heure_debut_prestation',
             'form.lieu_prestation' => 'required|string|max:255',
             'form.type_evenement' => 'required|string|max:255',
             'form.status' => 'required|string|in:en cours de redaction,redigee',
@@ -255,7 +255,13 @@ class PrestationFormModal extends Component
             $overlappingArtistsNames = $overlappingOtherPrestations->map(function($p) {
                 return $p->artiste ? $p->artiste->nom : 'Artiste inconnu';
             })->unique()->implode(', ');
-            $this->overlappingWarning = 'Attention : ' . ($overlappingOtherPrestations->count() > 1 ? 'D\'autres artistes (' . $overlappingArtistsNames . ') ont des prestations' : 'L\'artiste ' . $overlappingArtistsNames . ' a une prestation') . ' qui chevauche cette période.';
+            $this->overlappingWarning =
+                'Attention : ' . ($overlappingOtherPrestations->count() > 1
+
+                    ? 'D\'autres artistes (' . $overlappingArtistsNames . ') ont des prestations'
+
+                    : 'L\'artiste ' . $overlappingArtistsNames . ' a une prestation') .
+                      ' qui chevauche cette période.';
         }
 
         try {
@@ -327,6 +333,6 @@ class PrestationFormModal extends Component
 
     public function render(): \Illuminate\Contracts\View\View
     {
-        return view('livewire.admin.calendar.prestation-form-modal');
+        return view('livewire.admin.calendar.prestation.prestation-form-modal');
     }
 }

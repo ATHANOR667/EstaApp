@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Livewire\Admin\Calendar;
+namespace App\Livewire\Admin\Calendar\Contrat;
 
-use Livewire\Component;
 use App\Models\Contrat;
 use App\Services\DocuSignService;
 use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\On;
+use Livewire\Component;
 
 class DocuSignSendModal extends Component
 {
@@ -22,30 +22,32 @@ class DocuSignSendModal extends Component
     public bool $errorOccurred = false;
     public string $errorMessage = '';
 
+
+
     public function mount(): void
     {
         $this->showModal = false;
     }
 
     #[On('send-by-email')]
-    public function openModalEmail(int $contratId): void
+    public function openModalEmail(int $contratId , string  $warning = null): void
     {
-        $this->openModal($contratId, 'email');
+        $this->openModal($contratId, 'email', $warning);
     }
 
     #[On('send-by-sms')]
-    public function openModalSMS(int $contratId): void
+    public function openModalSMS(int $contratId , string  $warning = null): void
     {
-        $this->openModal($contratId, 'sms');
+        $this->openModal($contratId, 'sms', $warning);
     }
 
     #[On('send-by-whatsapp')]
-    public function openModalWhatsApp(int $contratId): void
+    public function openModalWhatsApp(int $contratId , string  $warning = null): void
     {
-        $this->openModal($contratId, 'whatsapp');
+        $this->openModal($contratId, 'whatsapp', $warning);
     }
 
-    private function openModal(int $contratId, string $method): void
+    private function openModal(int $contratId, string $method , string $warning = null): void
     {
         $this->contratId = $contratId;
         $this->method = $method;
@@ -68,6 +70,10 @@ class DocuSignSendModal extends Component
         $this->resetErrorBag();
         $this->errorOccurred = false;
         $this->errorMessage = '';
+        if($warning)
+        {
+            session()->flash('warning', $warning);
+        }
     }
 
     public function sendByMail(): void
@@ -145,6 +151,6 @@ class DocuSignSendModal extends Component
 
     public function render(): \Illuminate\Contracts\View\View
     {
-        return view('livewire.admin.calendar.docu-sign-send-modal');
+        return view('livewire.admin.calendar.contrat.docu-sign-send-modal');
     }
 }

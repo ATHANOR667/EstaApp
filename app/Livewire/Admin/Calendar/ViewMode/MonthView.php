@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Livewire\Admin\Calendar;
+namespace App\Livewire\Admin\Calendar\ViewMode;
 
-use Illuminate\Database\Eloquent\Collection;
-use Livewire\Component;
+use App\Models\Prestation;
 use Carbon\Carbon;
+use Illuminate\Support\Collection;
+use Livewire\Attributes\On;
+use Livewire\Component;
 
 class MonthView extends Component
 {
@@ -14,6 +16,16 @@ class MonthView extends Component
     public int $daysInMonth;
     public Carbon $firstDayOfMonth;
     public int $blankDaysBefore;
+
+    #[On('refreshMonthView')]
+    public function refresh( array $prestationIds): void
+    {
+        $prestations = Prestation::with('artiste')
+            ->whereIn('id', $prestationIds)
+            ->get();
+        $this->mount($this->currentDate, $prestations);
+        $this->render();
+    }
 
     public function mount(Carbon $currentDate, Collection $prestations): void
     {
@@ -55,11 +67,14 @@ class MonthView extends Component
 
     public function openDayDetails($date): void
     {
-        $this->dispatch('set-view-mode', mode: 'day', dateOptionnelle: $date);
+        $this->dispatch('set-view-mode',
+            mode: 'day',
+            dateOptionnelle: $date
+        );
     }
 
     public function render(): \Illuminate\Contracts\View\View
     {
-        return view('livewire.admin.calendar.month-view');
+        return view('livewire.admin.calendar.view-mode.month-view');
     }
 }

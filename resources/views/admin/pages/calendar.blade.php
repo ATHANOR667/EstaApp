@@ -5,7 +5,7 @@
 @section('content')
 
     <div class="py-8">
-        @livewire('admin.calendar')
+        @livewire('admin.calendar.calendar')
     </div>
 
 @endsection

@@ -1,8 +1,8 @@
-<div>
 
-    @if ($showModal)
+<div>
+    <!--[if BLOCK]><![endif]--><?php if($showModal): ?>
         <div class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center p-4 z-50"
-             x-data="{ show: @entangle('showModal') }" x-show="show"
+             x-data="{ show: <?php if ((object) ('showModal') instanceof \Livewire\WireDirective) : ?>window.Livewire.find('<?php echo e($__livewire->getId()); ?>').entangle('<?php echo e('showModal'->value()); ?>')<?php echo e('showModal'->hasModifier('live') ? '.live' : ''); ?><?php else : ?>window.Livewire.find('<?php echo e($__livewire->getId()); ?>').entangle('<?php echo e('showModal'); ?>')<?php endif; ?> }" x-show="show"
              x-transition:enter="transition ease-out duration-300"
              x-transition:enter-start="opacity-0 scale-90"
              x-transition:enter-end="opacity-100 scale-100"
@@ -18,41 +18,55 @@
                     </svg>
                 </button>
                 <h3 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">
-                    {{ $editingPrestationId ? 'Modifier la prestation' : 'Créer une nouvelle prestation' }}
+                    <?php echo e($editingPrestationId ? 'Modifier la prestation' : 'Créer une nouvelle prestation'); ?>
+
                 </h3>
 
-                @if ($overlappingWarning)
+                <!--[if BLOCK]><![endif]--><?php if($overlappingWarning): ?>
                     <div class="bg-yellow-100 dark:bg-yellow-800 border border-yellow-400 dark:border-yellow-700 text-yellow-700 dark:text-yellow-100 px-4 py-3 rounded relative mb-4" role="alert">
-                        <span class="block sm:inline">{{ $overlappingWarning }}</span>
+                        <span class="block sm:inline"><?php echo e($overlappingWarning); ?></span>
                     </div>
-                @endif
+                <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
 
                 <form wire:submit.prevent="savePrestation" class="space-y-4">
-                    <!-- Section Informations Générales -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label for="artiste_id" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Sélectionner un artiste <span class="text-red-500">*</span></label>
-                            <select id="artiste_id" wire:model.live="form.artiste_id" {{-- Utilise wire:model.live pour mise à jour immédiate --}}
-                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 px-3 py-2 transition-colors transition-shadow duration-200 ease-in-out">
+                            <select id="artiste_id" wire:model.live="form.artiste_id"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 px-3 py-2 transition-colors transition-shadow duration-200 ease-in-out">
                                 <option value="">-- Sélectionner un artiste --</option>
-                                @foreach ($artistes as $artiste)
-                                    <option value="{{ $artiste->id }}">{{ $artiste->nom }}</option>
-                                @endforeach
+                                <!--[if BLOCK]><![endif]--><?php $__currentLoopData = $artistes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $artiste): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                    <option value="<?php echo e($artiste->id); ?>"><?php echo e($artiste->nom); ?></option>
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><!--[if ENDBLOCK]><![endif]-->
                             </select>
-                            @error('form.artiste_id') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                            <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['form.artiste_id'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> <span class="text-red-500 text-xs"><?php echo e($message); ?></span> <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                         </div>
                         <div>
                             <label for="display_nom_artiste_groupe" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nom de l'artiste ou du groupe</label>
                             <input type="text" id="display_nom_artiste_groupe"
-                                   value="{{ $form['artiste_id'] ? ($artistes->firstWhere('id', $form['artiste_id'])->nom ?? '') : '' }}"
+                                   value="<?php echo e($form['artiste_id'] ? ($artistes->firstWhere('id', $form['artiste_id'])->nom ?? '') : ''); ?>"
                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm bg-gray-100 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 px-3 py-2 cursor-not-allowed"
-                                   readonly> {{-- Ce champ est maintenant en lecture seule --}}
+                                   readonly>
                         </div>
                         <div>
                             <label for="nom_structure_contractante" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nom de la structure contractante / organisateur <span class="text-red-500">*</span></label>
                             <input type="text" id="nom_structure_contractante" wire:model="form.nom_structure_contractante"
                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 px-3 py-2 transition-colors transition-shadow duration-200 ease-in-out">
-                            @error('form.nom_structure_contractante') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                            <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['form.nom_structure_contractante'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> <span class="text-red-500 text-xs"><?php echo e($message); ?></span> <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                         </div>
                         <div>
                             <label for="nom_representant_legal_artiste" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nom du représentant légal de l'artiste</label>
@@ -73,31 +87,58 @@
 
                     <hr class="border-gray-200 dark:border-gray-700 my-4">
 
-                    <!-- Section Détails de la prestation -->
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label for="date_prestation" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Date de la prestation <span class="text-red-500">*</span></label>
                             <input type="date" id="date_prestation" wire:model="form.date_prestation"
                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 px-3 py-2 transition-colors transition-shadow duration-200 ease-in-out">
-                            @error('form.date_prestation') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                            <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['form.date_prestation'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> <span class="text-red-500 text-xs"><?php echo e($message); ?></span> <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                         </div>
                         <div>
                             <label for="heure_debut_prestation" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Heure de début <span class="text-red-500">*</span></label>
                             <input type="time" id="heure_debut_prestation" wire:model="form.heure_debut_prestation"
                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 px-3 py-2 transition-colors transition-shadow duration-200 ease-in-out">
-                            @error('form.heure_debut_prestation') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                            <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['form.heure_debut_prestation'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> <span class="text-red-500 text-xs"><?php echo e($message); ?></span> <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                         </div>
                         <div>
                             <label for="heure_fin_prevue" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Heure de fin prévue <span class="text-red-500">*</span></label>
                             <input type="time" id="heure_fin_prevue" wire:model="form.heure_fin_prevue"
                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 px-3 py-2 transition-colors transition-shadow duration-200 ease-in-out">
-                            @error('form.heure_fin_prevue') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                            <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['form.heure_fin_prevue'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> <span class="text-red-500 text-xs"><?php echo e($message); ?></span> <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                         </div>
                         <div>
                             <label for="lieu_prestation" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Lieu de la prestation <span class="text-red-500">*</span></label>
                             <input type="text" id="lieu_prestation" wire:model="form.lieu_prestation"
                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 px-3 py-2 transition-colors transition-shadow duration-200 ease-in-out">
-                            @error('form.lieu_prestation') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                            <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['form.lieu_prestation'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> <span class="text-red-500 text-xs"><?php echo e($message); ?></span> <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                         </div>
                         <div>
                             <label for="duree_effective_performance" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Durée effective de la performance (min)</label>
@@ -115,7 +156,14 @@
                                 <option value="Festival">Festival</option>
                                 <option value="Autre">Autre</option>
                             </select>
-                            @error('form.type_evenement') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                            <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['form.type_evenement'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> <span class="text-red-500 text-xs"><?php echo e($message); ?></span> <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                         </div>
                         <div>
                             <label for="nombre_sets_morceaux" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Nombre de sets / morceaux prévus</label>
@@ -126,7 +174,6 @@
 
                     <hr class="border-gray-200 dark:border-gray-700 my-4">
 
-                    <!-- Section Conditions financières -->
                     <h4 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">Conditions financières</h4>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
@@ -134,7 +181,7 @@
                             <input type="number" step="0.01" id="montant_total_cachet" wire:model="form.montant_total_cachet"
                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 px-3 py-2 transition-colors transition-shadow duration-200 ease-in-out">
                         </div>
-                        <div>
+                        <div class="relative">
                             <label for="modalites_paiement" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Modalités de paiement</label>
                             <select id="modalites_paiement" wire:model="form.modalites_paiement"
                                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 px-3 py-2 transition-colors transition-shadow duration-200 ease-in-out">
@@ -143,6 +190,18 @@
                                 <option value="Paiement unique">Paiement unique</option>
                                 <option value="Autre">Autre</option>
                             </select>
+                            <div class="absolute top-0 right-0 mt-1 mr-1">
+                                <span class="text-gray-400 cursor-help" x-data="{ tooltipOpen: false }" @mouseover="tooltipOpen = true" @mouseleave="tooltipOpen = false">
+                                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <span x-show="tooltipOpen" class="absolute z-10 p-2 bg-gray-800 text-white text-xs rounded shadow-lg" style="width: 200px; right: 0;">
+                                        Avance + Solde : Paiement en deux parties (acompte puis solde).<br>
+                                        Paiement unique : Paiement complet en une fois.<br>
+                                        Autre : Modalités personnalisées.
+                                    </span>
+                                </span>
+                            </div>
                         </div>
                         <div>
                             <label for="montant_avance" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Montant de l'avance (si applicable)</label>
@@ -184,7 +243,6 @@
 
                     <hr class="border-gray-200 dark:border-gray-700 my-4">
 
-                    <!-- Section Spécificités techniques -->
                     <h4 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">Spécificités techniques</h4>
                     <div class="space-y-4">
                         <div>
@@ -206,10 +264,9 @@
 
                     <hr class="border-gray-200 dark:border-gray-700 my-4">
 
-                    <!-- Section Communication et promotion -->
                     <h4 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">Communication et promotion</h4>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
+                        <div class="relative">
                             <label for="droits_image" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Droits d’image (utilisation des photos/vidéos)</label>
                             <select id="droits_image" wire:model="form.droits_image"
                                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 px-3 py-2 transition-colors transition-shadow duration-200 ease-in-out">
@@ -218,12 +275,24 @@
                                 <option value="Non">Non</option>
                                 <option value="À définir">À définir</option>
                             </select>
+                            <div class="absolute top-0 right-0 mt-1 mr-1">
+                                <span class="text-gray-400 cursor-help" x-data="{ tooltipOpen: false }" @mouseover="tooltipOpen = true" @mouseleave="tooltipOpen = false">
+                                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <span x-show="tooltipOpen" class="absolute z-10 p-2 bg-gray-800 text-white text-xs rounded shadow-lg" style="width: 200px; right: 0;">
+                                        Oui : L’organisateur peut utiliser les photos/vidéos pour promotion.<br>
+                                        Non : Utilisation interdite sans accord supplémentaire.<br>
+                                        À définir : Négociation future des droits.
+                                    </span>
+                                </span>
+                            </div>
                         </div>
                         <div class="flex items-center mt-6">
                             <input type="checkbox" id="mention_artiste_supports_communication" wire:model="form.mention_artiste_supports_communication" class="rounded border-gray-300 text-blue-600 shadow-sm focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600">
                             <label for="mention_artiste_supports_communication" class="ml-2 text-sm font-medium text-gray-700 dark:text-gray-300">Mention de l’artiste sur les supports de communication ?</label>
                         </div>
-                        <div>
+                        <div class="relative">
                             <label for="interdiction_captation_audio_video" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Interdiction de captation audio/vidéo ?</label>
                             <select id="interdiction_captation_audio_video" wire:model="form.interdiction_captation_audio_video"
                                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 px-3 py-2 transition-colors transition-shadow duration-200 ease-in-out">
@@ -232,12 +301,23 @@
                                 <option value="Non">Non</option>
                                 <option value="Partielle">Partielle</option>
                             </select>
+                            <div class="absolute top-0 right-0 mt-1 mr-1">
+                                <span class="text-gray-400 cursor-help" x-data="{ tooltipOpen: false }" @mouseover="tooltipOpen = true" @mouseleave="tooltipOpen = false">
+                                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <span x-show="tooltipOpen" class="absolute z-10 p-2 bg-gray-800 text-white text-xs rounded shadow-lg" style="width: 200px; right: 0;">
+                                        Oui : Interdiction totale des captations audio/vidéo.<br>
+                                        Non : Captations autorisées sans restriction.<br>
+                                        Partielle : Captations autorisées uniquement pour le public (ex. téléphones), interdites pour l’organisateur ou tiers sans accord.
+                                    </span>
+                                </span>
+                            </div>
                         </div>
                     </div>
 
                     <hr class="border-gray-200 dark:border-gray-700 my-4">
 
-                    <!-- Section Clauses contractuelles -->
                     <h4 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">Clauses contractuelles</h4>
                     <div class="space-y-4">
                         <div>
@@ -250,7 +330,7 @@
                             <input type="text" id="responsabilite_force_majeure" wire:model="form.responsabilite_force_majeure"
                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 px-3 py-2 transition-colors transition-shadow duration-200 ease-in-out">
                         </div>
-                        <div>
+                        <div class="relative">
                             <label for="assurance_securite_lieu_par" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Assurance / sécurité du lieu assurée par</label>
                             <select id="assurance_securite_lieu_par" wire:model="form.assurance_securite_lieu_par"
                                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 px-3 py-2 transition-colors transition-shadow duration-200 ease-in-out">
@@ -259,6 +339,18 @@
                                 <option value="Artiste">Artiste</option>
                                 <option value="Autre">Autre</option>
                             </select>
+                            <div class="absolute top-0 right-0 mt-1 mr-1">
+                                <span class="text-gray-400 cursor-help" x-data="{ tooltipOpen: false }" @mouseover="tooltipOpen = true" @mouseleave="tooltipOpen = false">
+                                    <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <span x-show="tooltipOpen" class="absolute z-10 p-2 bg-gray-800 text-white text-xs rounded shadow-lg" style="width: 200px; right: 0;">
+                                        Organisateur : L’organisateur assure la sécurité et l’assurance du lieu.<br>
+                                        Artiste : L’artiste prend en charge ces responsabilités.<br>
+                                        Autre : Un tiers (ex. société externe) est responsable.
+                                    </span>
+                                </span>
+                            </div>
                         </div>
                         <div class="flex items-center">
                             <input type="checkbox" id="engagement_ponctualite_presence" wire:model="form.engagement_ponctualite_presence" class="rounded border-gray-300 text-blue-600 shadow-sm focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600">
@@ -268,8 +360,7 @@
 
                     <hr class="border-gray-200 dark:border-gray-700 my-4">
 
-                    <!-- Section Optionnel et Statut -->
-                    <h4 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">Statut et Notes</h4>
+                    <h4 class="text-lg font-semibold text-gray-800 dark:text-gray-100 mb-2">Notes</h4>
                     <div class="space-y-4">
                         <div>
                             <label for="observations_particulieres" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Observations particulières / Notes diverses</label>
@@ -282,26 +373,41 @@
                                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100 px-3 py-2 transition-colors transition-shadow duration-200 ease-in-out">
                                 <option value="en cours de redaction">En cours de rédaction</option>
                                 <option value="redigee">Rédigée</option>
-                                {{-- Les autres statuts seront gérés par le modèle Contrat --}}
                             </select>
-                            @error('form.status') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                            <!--[if BLOCK]><![endif]--><?php $__errorArgs = ['form.status'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> <span class="text-red-500 text-xs"><?php echo e($message); ?></span> <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                         </div>
                     </div>
 
-                    <div class="mt-6 flex justify-end space-x-3">
-                        <button type="button" wire:click="closeModal"
-                                class="px-5 py-2 rounded-md bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors duration-200">
-                            Annuler
-                        </button>
-                        <button type="submit"
-                                class="px-5 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
-                            {{ $editingPrestationId ? 'Mettre à jour' : 'Créer' }}
-                        </button>
+                    <div class="mt-6 flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-3">
+                        <div wire:loading.remove>
+                            <button type="button" wire:click="closeModal"
+                                    class="w-full sm:w-auto px-5 py-2 rounded-md bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors duration-200">
+                                Annuler
+                            </button>
+                            <button type="submit"
+                                    class="w-full sm:w-auto px-5 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
+                                <?php echo e($editingPrestationId ? 'Mettre à jour' : 'Créer'); ?>
+
+                            </button>
+                        </div>
+                        <div wire:loading class="flex items-center justify-center w-full sm:w-auto">
+                            <svg class="animate-spin h-5 w-5 text-gray-500 dark:text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        </div>
                     </div>
                 </form>
             </div>
         </div>
-    @endif
-
+    <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
 
 </div>
+<?php /**PATH C:\Users\MARCAU\PhpstormProjects\EstaApp\resources\views/livewire/admin/calendar/prestation/prestation-form-modal.blade.php ENDPATH**/ ?>

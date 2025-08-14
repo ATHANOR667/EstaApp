@@ -1,41 +1,37 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full" x-data="{ darkMode: localStorage.getItem('theme') === 'dark' }"
-      :class="{'dark': darkMode}">
+<html lang="en" class="h-full" x-data="{ darkMode: localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches) }" x-init="window.AlpineDarkMode = $data; window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => { if (!localStorage.getItem('theme')) darkMode = e.matches });" :class="{ 'dark': darkMode }">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Super-admin Panel Authentication</title>
-
+    <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css', 'resources/js/app.js']); ?>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
-            theme: {
-                extend: {
-
-                },
-            }
         }
-    </script>
-    <?php echo \Livewire\Mechanisms\FrontendAssets\FrontendAssets::styles(); ?>
+    </script>    <?php echo \Livewire\Mechanisms\FrontendAssets\FrontendAssets::styles(); ?>
 
     <?php echo \Livewire\Mechanisms\FrontendAssets\FrontendAssets::scripts(); ?>
-
 
 </head>
 <body class="h-full bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300 ease-in-out flex flex-col min-h-screen font-sans antialiased">
 <header class="bg-blue-600 dark:bg-blue-800 text-white p-4 shadow-md transition-colors duration-300 ease-in-out">
     <div class="container mx-auto flex justify-between items-center">
         <h1 class="text-2xl md:text-3xl font-extrabold text-center flex-grow">Super-admin Panel Authentication</h1>
-        <button @click="darkMode = !darkMode; localStorage.setItem('theme', darkMode ? 'dark' : 'light')"
-                class="p-2 rounded-full bg-blue-700 dark:bg-blue-900 text-white hover:bg-blue-800 dark:hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-blue-600 dark:focus:ring-offset-blue-800 focus:ring-white transition-colors duration-300 ease-in-out"
-                aria-label="Toggle dark mode">
-            <svg x-show="!darkMode" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h1M4 12H3m15.325-7.757l-.707.707M6.343 17.657l-.707.707M16.95 7.05l.707-.707M7.05 16.95l-.707.707M12 15a3 3 0 100-6 3 3 0 000 6z" />
-            </svg>
-            <svg x-show="darkMode" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-            </svg>
+        <button @click="darkMode = !darkMode; localStorage.setItem('theme', darkMode ? 'dark' : 'light'); window.dispatchEvent(new CustomEvent('dark-mode-toggled', { detail: darkMode }))"
+                class="relative flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-700 dark:to-blue-800 text-white hover:from-blue-600 hover:to-blue-700 dark:hover:from-blue-800 dark:hover:to-blue-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-800 focus:ring-blue-500 transition-all duration-300 ease-in-out"
+                aria-label="Basculer le mode sombre">
+            <span class="absolute transition-opacity duration-300 ease-in-out" x-show="!darkMode" x-transition:enter="transition-opacity duration-300" x-transition:leave="transition-opacity duration-300">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h1M4 12H3m15.325-7.757l-.707.707M6.343 17.657l-.707.707M16.95 7.05l.707-.707M7.05 16.95l-.707.707M12 15a3 3 0 100-6 3 3 0 000 6z" />
+                </svg>
+            </span>
+            <span class="absolute transition-opacity duration-300 ease-in-out" x-show="darkMode" x-transition:enter="transition-opacity duration-300" x-transition:leave="transition-opacity duration-300">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+            </span>
         </button>
     </div>
 </header>
@@ -87,7 +83,6 @@
         <p class="text-sm md:text-base">&copy; <?php echo e(date('Y')); ?> Super-admin Panel. Tous droits réservés.</p>
     </div>
 </footer>
-
 </body>
 </html>
 <?php /**PATH C:\Users\MARCAU\PhpstormProjects\EstaApp\resources\views/super-admin/disconnected-base.blade.php ENDPATH**/ ?>

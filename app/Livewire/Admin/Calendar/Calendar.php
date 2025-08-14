@@ -1,22 +1,35 @@
 <?php
 
-namespace App\Livewire\Admin;
+namespace App\Livewire\Admin\Calendar;
 
+use App\Models\Prestation;
+use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\On;
 use Livewire\Component;
-use Carbon\Carbon;
-use App\Models\Prestation;
 
 class Calendar extends Component
 {
     public  Carbon $currentDate;
     public string $viewMode = 'month';
-    protected $listeners = [
-        'refreshCalendar' => '$refresh',
-    ];
 
+    public Collection $prestations;
 
+    #[On('refreshCalendar')]
+    public function refresh(): void
+    {
+        $this->prestationsForCurrentPeriod();
+        switch ($this->viewMode) {
+            case 'month':
+                $this->dispatch('refreshMonthView',
+                    prestationIds : $this->prestations->pluck('id')->toArray());
+                break;
+            case 'day':
+                $this->dispatch('refreshDayView',
+                    prestationIds : $this->prestations->pluck('id')->toArray());
+                break;
+        }
+    }
     public function mount(): void
     {
         $this->currentDate = Carbon::now();
@@ -28,7 +41,7 @@ class Calendar extends Component
      *
      * @return Collection
      */
-    public function getPrestationsForCurrentPeriodProperty(): Collection
+    public function prestationsForCurrentPeriod() :void
     {
         $query = Prestation::query();
 
@@ -43,10 +56,10 @@ class Calendar extends Component
                 $end = $this->currentDate->copy()->endOfDay();
                 break;
             default:
-                return collect();
+                $this->prestations =  collect();
         }
 
-        return $query->whereBetween('date_prestation', [$start, $end])
+        $this->prestations = $query->whereBetween('date_prestation', [$start, $end])
             ->with('artiste')
             ->orderBy('date_prestation')
             ->orderBy('heure_debut_prestation')
@@ -153,6 +166,7 @@ class Calendar extends Component
 
     public function render(): \Illuminate\Contracts\View\View
     {
-        return view('livewire.admin.calendar');
+        $this->prestationsForCurrentPeriod();
+        return view('livewire.admin.calendar.calendar');
     }
 }

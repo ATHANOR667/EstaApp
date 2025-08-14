@@ -1,9 +1,12 @@
 <?php
 
 use App\Http\Controllers\ContratController;
+use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
 
-
+Route::middleware(['auth:admin'])->group(function () {
+    Broadcast::routes();
+});
 Route::get('/contrats/download/{contrat}', [ContratController::class, 'downloadPdf'])->name('contrats.download_pdf')->middleware('signed');
 
 /** ROUTES SUPER-ADMIN */

@@ -5,6 +5,7 @@
     class="fixed inset-0 z-50 overflow-y-auto"
     style="display: none;"
 >
+
     <div x-show="showModal" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 bg-gray-900 bg-opacity-50 transition-opacity"></div>
 
     <div x-show="showModal" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" class="relative z-50 flex min-h-full items-center justify-center p-4 text-center sm:p-0">
@@ -15,7 +16,22 @@
                         <h3 class="text-xl font-semibold leading-6 text-gray-900 dark:text-gray-100" id="modal-title">
                             Envoyer le contrat via <span x-text="method.charAt(0).toUpperCase() + method.slice(1)"></span>
                         </h3>
-                        <div x-show="$wire.get('session.success')" class="mt-2 p-2 text-green-700 bg-green-100 rounded-lg dark:text-green-200 dark:bg-green-800" x-text="$wire.get('session.success')"></div>
+
+                        
+                        <!--[if BLOCK]><![endif]--><?php if(session('success')): ?>
+                            <div class="mt-2 p-2 text-green-700 bg-green-100 rounded-lg dark:text-green-200 dark:bg-green-800">
+                                <?php echo e(session('success')); ?>
+
+                            </div>
+                        <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
+
+                        <!--[if BLOCK]><![endif]--><?php if(session('warning')): ?>
+                            <div class="mt-2 p-2 text-yellow-700 bg-yellow-100 rounded-lg dark:text-yellow-200 dark:bg-yellow-800">
+                                <?php echo e(session('warning')); ?>
+
+                            </div>
+                        <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
+
                         <div x-show="errorOccurred" class="mt-2 p-2 text-red-700 bg-red-100 rounded-lg dark:text-red-200 dark:bg-red-800" x-text="$wire.errorMessage"></div>
                     </div>
                     <div class="absolute right-0 top-0 hidden pr-4 pt-4 sm:block">
@@ -109,44 +125,56 @@ unset($__errorArgs, $__bag); ?><!--[if ENDBLOCK]><![endif]-->
                 </div>
 
                 <div class="bg-gray-50 dark:bg-gray-700 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 mt-6 gap-3">
-                    <button
-                        type="button"
-                        @click="$wire.call('sendBy' + (method === 'email' ? 'Mail' : (method === 'sms' ? 'SMS' : 'WhatsApp')))"
-                        class="inline-flex justify-center items-center w-full rounded-md bg-green-600 px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 sm:w-auto transition-all duration-200"
-                        :disabled="errorOccurred && method === 'email'"
-                    >
-                        Envoyer
-                    </button>
-                    <div x-show="errorOccurred" class="sm:flex sm:gap-3 mt-3 sm:mt-0">
+                    
+                    <div wire:loading.remove class="flex flex-col sm:flex-row sm:flex-1 space-y-3 sm:space-y-0 sm:space-x-3 sm:justify-end">
                         <button
                             type="button"
-                            @click="method = 'email'; $wire.set('method', 'email')"
-                            class="inline-flex justify-center items-center w-full rounded-md bg-indigo-600 px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 sm:w-auto transition-all duration-200"
+                            @click="$wire.call('sendBy' + (method === 'email' ? 'Mail' : (method === 'sms' ? 'SMS' : 'WhatsApp')))"
+                            class="inline-flex justify-center items-center w-full sm:w-auto rounded-md bg-green-600 px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition-all duration-200"
+                            :disabled="errorOccurred && method === 'email'"
                         >
-                            Essayer par Email
+                            Envoyer
                         </button>
+                        <div x-show="errorOccurred" class="sm:flex sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3 mt-3 sm:mt-0">
+                            <button
+                                type="button"
+                                @click="method = 'email'; $wire.set('method', 'email')"
+                                class="inline-flex justify-center items-center w-full sm:w-auto rounded-md bg-indigo-600 px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition-all duration-200"
+                            >
+                                Essayer par Email
+                            </button>
+                            <button
+                                type="button"
+                                @click="method = 'sms'; $wire.set('method', 'sms')"
+                                class="inline-flex justify-center items-center w-full sm:w-auto rounded-md bg-indigo-600 px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition-all duration-200"
+                            >
+                                Essayer par SMS
+                            </button>
+                            <button
+                                type="button"
+                                @click="method = 'whatsapp'; $wire.set('method', 'whatsapp')"
+                                class="inline-flex justify-center items-center w-full sm:w-auto rounded-md bg-indigo-600 px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition-all duration-200"
+                            >
+                                Essayer par WhatsApp
+                            </button>
+                        </div>
                         <button
                             type="button"
-                            @click="method = 'sms'; $wire.set('method', 'sms')"
-                            class="inline-flex justify-center items-center w-full rounded-md bg-indigo-600 px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 sm:w-auto transition-all duration-200"
+                            @click="$wire.closeModal()"
+                            class="mt-3 sm:mt-0 inline-flex justify-center items-center w-full sm:w-auto rounded-md bg-white dark:bg-gray-800 px-4 py-2 text-xs font-semibold text-gray-900 dark:text-gray-100 shadow-sm ring-1 ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition-all duration-200"
                         >
-                            Essayer par SMS
-                        </button>
-                        <button
-                            type="button"
-                            @click="method = 'whatsapp'; $wire.set('method', 'whatsapp')"
-                            class="inline-flex justify-center items-center w-full rounded-md bg-indigo-600 px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 sm:w-auto transition-all duration-200"
-                        >
-                            Essayer par WhatsApp
+                            Annuler
                         </button>
                     </div>
-                    <button
-                        type="button"
-                        @click="$wire.closeModal()"
-                        class="mt-3 sm:mt-0 inline-flex justify-center items-center w-full rounded-md bg-white dark:bg-gray-800 px-4 py-2 text-xs font-semibold text-gray-900 dark:text-gray-100 shadow-sm ring-1 ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 sm:w-auto transition-all duration-200"
-                    >
-                        Annuler
-                    </button>
+
+                    
+                    <div wire:loading class="flex justify-center items-center w-full h-full">
+                        <svg class="animate-spin h-5 w-5 mr-3 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Chargement...
+                    </div>
                 </div>
             </form>
         </div>
