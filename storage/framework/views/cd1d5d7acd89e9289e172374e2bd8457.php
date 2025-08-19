@@ -10,7 +10,8 @@
         tailwind.config = {
             darkMode: 'class',
         }
-    </script>    <?php echo \Livewire\Mechanisms\FrontendAssets\FrontendAssets::styles(); ?>
+    </script>
+    <?php echo \Livewire\Mechanisms\FrontendAssets\FrontendAssets::styles(); ?>
 
     <?php echo \Livewire\Mechanisms\FrontendAssets\FrontendAssets::scripts(); ?>
 

@@ -1,13 +1,20 @@
 <?php
 
 use App\Http\Controllers\ContratController;
+use App\Http\Controllers\DocuSignWebhookController;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth:admin'])->group(function () {
     Broadcast::routes();
 });
-Route::get('/contrats/download/{contrat}', [ContratController::class, 'downloadPdf'])->name('contrats.download_pdf')->middleware('signed');
+Route::post('/docusign/webhook', [DocuSignWebhookController::class, 'handle'])
+    ->withoutMiddleware([VerifyCsrfToken::class]);;
+
+Route::get('/contrats/download/{contrat}', [ContratController::class, 'downloadPdf'])
+    ->name('contrats.download_pdf')
+    ->middleware('signed');
 
 /** ROUTES SUPER-ADMIN */
 

@@ -7,6 +7,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "ext-simplexml": "*",
         "barryvdh/laravel-dompdf": "*",
         "docusign/esign-client": "^8.3",
         "erusev/parsedown": "^1.7",
@@ -21,7 +22,8 @@
         "simplesoftwareio/simple-qrcode": "^4.2",
         "smalot/pdfparser": "^2.12",
         "spatie/laravel-markdown": "^2.7",
-        "spatie/laravel-permission": "^6.19"
+        "spatie/laravel-permission": "^6.19",
+        "twilio/sdk": "^8.7"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

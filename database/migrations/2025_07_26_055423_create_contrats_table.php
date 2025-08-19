@@ -17,6 +17,7 @@ return new class extends Migration
             $table->text('motif')->nullable();
             $table->string('status')->default('draft');
             $table->string('docusign_envelope_id')->nullable();
+            $table->string('docusign_document_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

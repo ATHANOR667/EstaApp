@@ -114,27 +114,44 @@ class ContratListModal extends Component
         $this->dispatch('send-contrat', id: $contratId);
     }
 
-    public function downloadPdf(Contrat $contrat): \Symfony\Component\HttpFoundation\StreamedResponse|null
+    public function downloadPdf(Contrat $contrat): \SplFileObject | \Symfony\Component\HttpFoundation\StreamedResponse | null
     {
         try {
             if ($contrat->status === 'signed' && $contrat->docusign_envelope_id) {
-                // Récupérer le PDF signé depuis DocuSign
+                // Configurer l'API DocuSign
                 $apiClient = new ApiClient();
-                $apiClient->getOAuth()->setOAuthBasePath(config('docusign.oauth_base_path'));
-                $accessToken = $apiClient->requestJWTUserToken(
-                    config('docusign.client_id'),
-                    config('docusign.user_id'),
-                    config('docusign.key_path'),
-                    config('docusign.scope')
-                )[0]['access_token'];
+                $apiClient->getConfig()->setHost('https://demo.docusign.net/restapi');
+
+                // Validation du fichier clé privée
+                $keyPath = base_path(config('services.docusign.key_path'));
+                $keyContent = file_get_contents($keyPath);
+
+
+                $apiClient->getOAuth()->setOAuthBasePath(config('services.docusign.oauth_base_path'));
+                $tokenResponse = $apiClient->requestJWTUserToken(
+                    config('services.docusign.client_id'),
+                    config('services.docusign.user_id'),
+                    $keyContent,
+                    config('services.docusign.scope')
+                );
+                $accessToken = $tokenResponse[0]['access_token'];
                 $apiClient->getConfig()->setAccessToken($accessToken);
 
                 $envelopeApi = new \DocuSign\eSign\Api\EnvelopesApi($apiClient);
-                $pdf = $envelopeApi->getDocument(config('docusign.account_id'), $contrat->docusign_envelope_id, '1');
 
+                $pdf = $envelopeApi->getDocument(
+                    config('services.docusign.account_id'),
+                    $contrat->docusign_document_id ,
+                    $contrat->docusign_envelope_id,
+                );
+
+                // Streamer le PDF
                 return response()->streamDownload(function () use ($pdf) {
                     echo $pdf;
-                }, 'contrat_' . $contrat->id . '_signed.pdf');
+                }, 'contrat_' . $contrat->id . '_signed.pdf', [
+                    'Content-Type' => 'application/pdf',
+                ]);
+
             } else {
                 // Générer le PDF local
                 $qrCodeUrl = URL::temporarySignedRoute(

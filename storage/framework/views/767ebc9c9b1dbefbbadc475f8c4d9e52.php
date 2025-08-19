@@ -74,9 +74,9 @@
         <p>Bonjour,</p>
         <p>Votre code de vérification à usage unique (OTP) est :</p>
         <div class="otp-code">
-            <strong>{{ $otp }}</strong>
+            <strong><?php echo e($otp); ?></strong>
         </div>
-        <p>Ce code est valable pendant {{ $expiryMinutes ?? 10 }} minutes.</p>
+        <p>Ce code est valable pendant <?php echo e($expiryMinutes ?? 10); ?> minutes.</p>
         <p>Veuillez l'utiliser pour compléter votre action.</p>
     </div>
     <div class="warning">
@@ -84,8 +84,9 @@
         <p>Pour des raisons de sécurité, ne partagez jamais ce code avec qui que ce soit.</p>
     </div>
     <div class="footer">
-        <p>&copy; {{ date('Y') }} Esta App. Tous droits réservés.</p>
+        <p>&copy; <?php echo e(date('Y')); ?> Event App. Tous droits réservés.</p>
     </div>
 </div>
 </body>
 </html>
+<?php /**PATH C:\Users\MARCAU\PhpstormProjects\EstaApp\resources\views/mail/auth/otp.blade.php ENDPATH**/ ?>

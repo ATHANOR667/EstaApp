@@ -5,20 +5,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script>
+        window.Laravel = {
+            userId: {{ Auth::guard('admin')->id() ?? 'null' }},
+            csrfToken: '{{ csrf_token() }}'
+        };
+    </script>
     <title>Admin Panel</title>
+    {{ Vite::useHotFile(false) }}
+    {{ Vite::useBuildDirectory('build') }}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @livewireStyles
-    @livewireScripts
     <title>@yield('title')</title>
 
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-        }
-    </script>
-
+    <script>tailwind.config = {darkMode: 'class',}</script>
 </head>
+
+@livewireStyles
+@livewireScripts
+
 <body class="h-full bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-300 ease-in-out flex flex-col min-h-screen font-sans antialiased">
 
 <nav class="bg-white dark:bg-gray-800 shadow-sm transition-colors duration-300 ease-in-out">

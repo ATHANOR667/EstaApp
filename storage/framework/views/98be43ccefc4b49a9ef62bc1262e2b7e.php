@@ -11,7 +11,7 @@
     class="fixed inset-0 z-50 overflow-y-auto"
     style="display: none;"
 >
-    <?php if (! $__env->hasRenderedOnce('a6243c36-1b5c-46c0-bf68-d1a1807c0919')): $__env->markAsRenderedOnce('a6243c36-1b5c-46c0-bf68-d1a1807c0919'); ?>
+    <?php if (! $__env->hasRenderedOnce('c57b170a-4105-409b-a25c-b593bd3e4712')): $__env->markAsRenderedOnce('c57b170a-4105-409b-a25c-b593bd3e4712'); ?>
         <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
         <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
         <style>
@@ -22,6 +22,7 @@
             .dark .ql-editor.ql-blank::before { color: #5a6474; }
         </style>
     <?php endif; ?>
+
 
     <div x-show="showModal" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 bg-gray-900 bg-opacity-50 transition-opacity"></div>
 
@@ -40,9 +41,28 @@
                             </svg>
                             Génération du contrat en cours...
                         </div>
-                        <div x-show="$wire.get('session.error')" class="mt-2 p-2 text-red-700 bg-red-100 rounded-lg dark:text-red-200 dark:bg-red-800" x-text="$wire.get('session.error')"></div>
-                        <div x-show="$wire.get('session.warning')" class="mt-2 p-2 text-yellow-700 bg-yellow-100 rounded-lg dark:text-yellow-200 dark:bg-yellow-800" x-text="$wire.get('session.warning')"></div>
-                        <div x-show="$wire.get('session.success')" class="mt-2 p-2 text-green-700 bg-green-100 rounded-lg dark:text-green-200 dark:bg-green-800" x-text="$wire.get('session.success')"></div>
+
+                        
+                        <!--[if BLOCK]><![endif]--><?php if(session()->has('error')): ?>
+                            <div class="mt-2 p-2 text-red-700 bg-red-100 rounded-lg dark:text-red-200 dark:bg-red-800">
+                                <?php echo e(session('error')); ?>
+
+                            </div>
+                        <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
+
+                        <?php if(session()->has('warning')): ?>
+                            <div class="mt-2 p-2 text-yellow-700 bg-yellow-100 rounded-lg dark:text-yellow-200 dark:bg-yellow-800">
+                                <?php echo e(session('warning')); ?>
+
+                            </div>
+                        <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
+
+                        <?php if(session()->has('success')): ?>
+                            <div class="mt-2 p-2 text-green-700 bg-green-100 rounded-lg dark:text-green-200 dark:bg-green-800">
+                                <?php echo e(session('success')); ?>
+
+                            </div>
+                        <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
                     </div>
                 </div>
                 <div class="absolute right-0 top-0 hidden pr-4 pt-4 sm:block">

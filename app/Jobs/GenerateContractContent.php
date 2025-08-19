@@ -35,11 +35,6 @@ class GenerateContractContent implements ShouldQueue
             $result = $generator->generateContent($prestation);
 
             if (!$result['success']) {
-                Log::error('Échec de la génération du contrat', [
-                    'prestation_id' => $this->prestationId,
-                    'user_id' => $this->userId,
-                    'error' => $result['error'],
-                ]);
                 event(new ContractContentGenerationFailed(['error' => $result['error']], $this->prestationId, $this->userId));
                 return;
             }
@@ -48,14 +43,6 @@ class GenerateContractContent implements ShouldQueue
             $cacheKey = 'contract_content_' . $this->prestationId . '_' . $this->userId . '_' . time();
             Cache::put($cacheKey, $htmlContent, now()->addMinutes(10));
 
-           /* Log::info('Contenu IA généré et stocké dans le cache', [
-                'prestation_id' => $this->prestationId,
-                'user_id' => $this->userId,
-                'markdown_length' => strlen($result['markdown']),
-                'html_length' => strlen($htmlContent),
-                'cache_key' => $cacheKey,
-                'html_content' => substr($htmlContent, 0, 200),
-            ]);*/
 
             event(new ContractContentGenerated($cacheKey, $this->prestationId, $this->userId));
         } catch (\Exception $e) {

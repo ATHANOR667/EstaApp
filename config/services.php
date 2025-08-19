@@ -45,11 +45,18 @@ return [
         'key_path' => env('DOCUSIGN_KEY_PATH'),
         'account_id' => env('DOCUSIGN_ACCOUNT_ID'),
         'oauth_base_path' => env('DOCUSIGN_OAUTH_BASE_PATH', 'account-d.docusign.com'),
+        'webhook_secret' => env('DOCUSIGN_WEBHOOK_SECRET'),
         'scope' => 'signature impersonation',
         'signature_artiste_anchor' => '/signature-artiste/',
         'signature_contractant_anchor' => '/signature-contractant/',
         'date_artiste_anchor' => '/date-artiste/',
         'date_contractant_anchor' => '/date-contractant/'
+    ],
+    'twilio' => [
+        'sid' => env('TWILIO_SID'),
+        'token' => env('TWILIO_AUTH_TOKEN'),
+        'from' => env('TWILIO_PHONE_NUMBER'),
+        'whatsapp_from' => env('TWILIO_WHATSAPP_NUMBER'),
     ],
 
 ];

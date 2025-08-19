@@ -40,7 +40,6 @@ class ContratFormModal extends Component
 
     public function handleContentGenerated(array $data): void
     {
-        Log::info('Contenu généré reçu', ['prestationId' => $this->prestationId, 'cache_key' => $data['cacheKey'] ?? 'N/A']);
         if (isset($data['cacheKey'])) {
             $htmlContent = Cache::get($data['cacheKey']);
             if ($htmlContent === null) {
@@ -69,11 +68,7 @@ class ContratFormModal extends Component
 
     public function handleContentGenerationFailed(array $data): void
     {
-        Log::error('Échec de la génération IA', [
-            'error' => $data['error'] ?? 'Erreur inconnue',
-            'prestationId' => $this->prestationId,
-        ]);
-        session()->flash('error', 'La génération a échoué. Veuillez réessayer.');
+        session()->flash('error', $data['error'] ?? 'La génération a échoué. Veuillez réessayer.');
         $this->isGenerating = false;
     }
 
@@ -92,11 +87,10 @@ class ContratFormModal extends Component
         $this->showSendOptions = false;
         $this->form['content'] = '';
         $this->dispatch('reset-quill');
-        Log::info('Début de la génération IA', ['prestationId' => $this->prestationId]);
 
         try {
             GenerateContractContent::dispatch($this->prestationId, $this->userId);
-            Log::info('Job IA dispatché', ['prestationId' => $this->prestationId, 'userId' => $this->userId]);
+
         } catch (\Exception $e) {
             Log::error('Erreur lors du dispatch IA', ['error' => $e->getMessage()]);
             session()->flash('error', 'Erreur lors de la génération : ' . $e->getMessage());

@@ -39,14 +39,6 @@ class DocuSignService
                 }
             }
 
-            // Vérifier les contrats en attente
-            if (Contrat::where('prestation_id', $contrat->prestation_id)->where('status', 'pending')->exists()) {
-                return [
-                    'success' => false,
-                    'error' => 'Un autre contrat est en attente de signature pour cette prestation.',
-                ];
-            }
-
             // Récupérer la prestation associée
             $prestation = $contrat->prestation;
             if (!$prestation) {
@@ -79,7 +71,7 @@ class DocuSignService
             $apiClient = new ApiClient();
             $apiClient->getConfig()->setHost('https://demo.docusign.net/restapi');
 
-            // Suggestion 6: Validation du fichier clé privée
+            // Validation du fichier clé privée
             $keyPath = base_path(config('services.docusign.key_path'));
             if (!file_exists($keyPath) || !is_readable($keyPath)) {
                 Log::error('Clé privée introuvable ou illisible', ['path' => $keyPath]);
@@ -228,9 +220,9 @@ class DocuSignService
             $envelopeApi = new \DocuSign\eSign\Api\EnvelopesApi($apiClient);
             $envelope = $envelopeApi->createEnvelope(config('services.docusign.account_id'), $envelopeDefinition);
 
-
             $contrat->status = 'pending';
             $contrat->docusign_envelope_id = $envelope->getEnvelopeId();
+            $contrat->docusign_document_id = $document->getDocumentId();
             $contrat->save();
 
             if ($prestation->contact_organisateur !== $contractant_contact) {
@@ -245,12 +237,15 @@ class DocuSignService
                 $prestation->save();
             }
 
+            // Tampon lu et approuvé côté artiste
+            $contrat->signature_artiste_representant = true;
+            $contrat->save();
+
             return [
                 'success' => true,
                 'message' => 'Contrat envoyé avec succès via ' . ucfirst($method) . ' !',
             ];
         } catch (ApiException $e) {
-
             $errorMessage = 'Erreur lors de l\'envoi du contrat.';
             if ($e->getCode() === 401) {
                 $errorMessage = 'Échec de l\'authentification DocuSign.';
@@ -308,12 +303,6 @@ class DocuSignService
         return $pdf->output();
     }
 
-    /**
-     * Valide la présence des ancres de signature et de date dans le PDF.
-     *
-     * @param string $pdfContent
-     * @return bool
-     */
     private function validateAnchors(string $pdfContent): bool
     {
         try {

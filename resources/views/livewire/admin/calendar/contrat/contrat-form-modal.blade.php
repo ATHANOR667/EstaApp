@@ -23,6 +23,7 @@
         </style>
     @endonce
 
+
     <div x-show="showModal" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 bg-gray-900 bg-opacity-50 transition-opacity"></div>
 
     <div x-show="showModal" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" class="relative z-50 flex min-h-full items-center justify-center p-4 text-center sm:p-0">
@@ -40,9 +41,25 @@
                             </svg>
                             Génération du contrat en cours...
                         </div>
-                        <div x-show="$wire.get('session.error')" class="mt-2 p-2 text-red-700 bg-red-100 rounded-lg dark:text-red-200 dark:bg-red-800" x-text="$wire.get('session.error')"></div>
-                        <div x-show="$wire.get('session.warning')" class="mt-2 p-2 text-yellow-700 bg-yellow-100 rounded-lg dark:text-yellow-200 dark:bg-yellow-800" x-text="$wire.get('session.warning')"></div>
-                        <div x-show="$wire.get('session.success')" class="mt-2 p-2 text-green-700 bg-green-100 rounded-lg dark:text-green-200 dark:bg-green-800" x-text="$wire.get('session.success')"></div>
+
+                        {{-- Messages flash --}}
+                        @if (session()->has('error'))
+                            <div class="mt-2 p-2 text-red-700 bg-red-100 rounded-lg dark:text-red-200 dark:bg-red-800">
+                                {{ session('error') }}
+                            </div>
+                        @endif
+
+                        @if (session()->has('warning'))
+                            <div class="mt-2 p-2 text-yellow-700 bg-yellow-100 rounded-lg dark:text-yellow-200 dark:bg-yellow-800">
+                                {{ session('warning') }}
+                            </div>
+                        @endif
+
+                        @if (session()->has('success'))
+                            <div class="mt-2 p-2 text-green-700 bg-green-100 rounded-lg dark:text-green-200 dark:bg-green-800">
+                                {{ session('success') }}
+                            </div>
+                        @endif
                     </div>
                 </div>
                 <div class="absolute right-0 top-0 hidden pr-4 pt-4 sm:block">
