@@ -66,9 +66,9 @@
                             <p class="text-sm text-gray-700 dark:text-gray-200 mt-2">Notes: {{ $prestation->observations_particulieres }}</p>
                         @endif
 
-                        {{-- Section des boutons avec un spinner --}}
+                        {{-- Section des boutons --}}
                         <div class="mt-4 flex flex-col sm:flex-row flex-wrap justify-end gap-2">
-                            <button wire:click="editPrestation" wire:loading.attr="disabled"
+                            <button wire:click="editPrestation" wire:loading.attr="disabled" wire:target="editPrestation"
                                     @if ($hasAcceptedContrat) disabled @endif
                                     class="px-4 py-2 rounded-md transition-colors duration-200 flex items-center justify-center
                                     @if ($hasAcceptedContrat)
@@ -85,7 +85,7 @@
                                 </span>
                             </button>
 
-                            <button wire:click="openContratList" wire:loading.attr="disabled"
+                            <button wire:click="openContratList" wire:loading.attr="disabled" wire:target="openContratList"
                                     class="px-4 py-2 rounded-md bg-purple-500 text-white hover:bg-purple-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors duration-200 flex items-center justify-center">
                                 <span wire:loading.remove wire:target="openContratList">Voir les contrats</span>
                                 <span wire:loading wire:target="openContratList">
@@ -96,7 +96,7 @@
                                 </span>
                             </button>
 
-                            <button wire:click="deletePrestation" wire:loading.attr="disabled"
+                            <button wire:click="deletePrestation" wire:loading.attr="disabled" wire:target="deletePrestation"
                                     onclick="confirm('Êtes-vous sûr de vouloir supprimer cette prestation ? Cela supprimera aussi tous les contrats associés.') || event.stopImmediatePropagation()"
                                     @if ($hasAcceptedContrat) disabled @endif
                                     class="px-4 py-2 rounded-md transition-colors duration-200 flex items-center justify-center
@@ -128,4 +128,15 @@
             </div>
         </div>
     @endif
+
+    {{-- Indicateur de chargement au niveau du composant --}}
+    <div wire:loading class="fixed inset-0 bg-gray-900 bg-opacity-75 flex items-center justify-center z-[100] transition-opacity duration-300">
+        <div class="flex flex-col items-center">
+            <svg class="animate-spin h-10 w-10 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span class="mt-2 text-sm font-medium text-white">Chargement...</span>
+        </div>
+    </div>
 </div>

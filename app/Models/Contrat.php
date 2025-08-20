@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\URL;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class Contrat extends Model
 {
@@ -59,5 +62,27 @@ class Contrat extends Model
     public function routeNotificationForSms($notification)
     {
         return $this->prestation->contact_artiste;
+    }
+
+    public function download(): \Symfony\Component\HttpFoundation\StreamedResponse
+    {
+        $qrCodeUrl = URL::temporarySignedRoute(
+            name : 'contrats.download_pdf',
+            expiration:  now()->addDays(7),
+            parameters : ['contrat' => $this->id] ,
+            absolute: true,
+        );
+        $qrCodeSvg = QrCode::size(150)->generate($qrCodeUrl)->toHtml();
+        $qrCodeBase64 = 'data:image/svg+xml;base64,' . base64_encode($qrCodeSvg);
+
+        $pdf = Pdf::loadView('pdf.view_contract', [
+            'contrat' => $this,
+            'qrCodeSvg' => $qrCodeBase64,
+            'dateEmission' => now()->format('d/m/Y'),
+        ])->setPaper('A4', 'portrait');
+
+        return response()->streamDownload(function () use ($pdf) {
+            echo $pdf->stream();
+        }, 'contrat_' . $this->id . '.pdf');
     }
 }

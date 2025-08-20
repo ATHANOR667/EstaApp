@@ -13,8 +13,7 @@ Route::post('/docusign/webhook', [DocuSignWebhookController::class, 'handle'])
     ->withoutMiddleware([VerifyCsrfToken::class]);;
 
 Route::get('/contrats/download/{contrat}', [ContratController::class, 'downloadPdf'])
-    ->name('contrats.download_pdf')
-    ->middleware('signed');
+    ->name('contrats.download_pdf');
 
 /** ROUTES SUPER-ADMIN */
 

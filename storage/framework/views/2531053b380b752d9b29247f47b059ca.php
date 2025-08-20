@@ -12,6 +12,10 @@
         };
     </script>
     <title>Admin Panel</title>
+    <?php echo e(Vite::useHotFile(false)); ?>
+
+    <?php echo e(Vite::useBuildDirectory('build')); ?>
+
     <?php echo app('Illuminate\Foundation\Vite')(['resources/css/app.css', 'resources/js/app.js']); ?>
     <title><?php echo $__env->yieldContent('title'); ?></title>
 

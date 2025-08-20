@@ -329,14 +329,25 @@
                     </div>
 
                     <div class="mt-6 flex flex-col sm:flex-row justify-end space-y-3 sm:space-y-0 sm:space-x-3">
-                        <div wire:loading.remove>
-                            <button type="button" wire:click="closeModal"
-                                    class="w-full sm:w-auto px-5 py-2 rounded-md bg-gray-200 text-gray-800 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors duration-200">
+                        <div class="mt-8 flex flex-col sm:flex-row justify-end items-center gap-3">
+
+                            <button wire:click="closeModal" type="button" class="w-full sm:w-auto px-4 py-2 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 border border-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:border-gray-600 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                 Annuler
                             </button>
+
                             <button type="submit"
-                                    class="w-full sm:w-auto px-5 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
-                                {{ $editingPrestationId ? 'Mettre à jour' : 'Créer' }}
+                                    class="w-full sm:w-auto px-4 py-2 text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+                                    wire:loading.attr="disabled"
+                                    wire:loading.class="opacity-50 cursor-not-allowed"
+                            >
+                                <span wire:loading.remove wire:target="savePrestation">
+                                    {{ $editingPrestationId ? 'Mettre à jour' : 'Enregistrer' }}
+                                </span>
+
+                                <span wire:loading wire:target="savePrestation">
+                                    Enregistrement...
+                                </span>
+
                             </button>
                         </div>
                         <div wire:loading class="flex items-center justify-center w-full sm:w-auto">

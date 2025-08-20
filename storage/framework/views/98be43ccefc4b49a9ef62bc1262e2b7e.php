@@ -11,7 +11,7 @@
     class="fixed inset-0 z-50 overflow-y-auto"
     style="display: none;"
 >
-    <?php if (! $__env->hasRenderedOnce('c57b170a-4105-409b-a25c-b593bd3e4712')): $__env->markAsRenderedOnce('c57b170a-4105-409b-a25c-b593bd3e4712'); ?>
+    <?php if (! $__env->hasRenderedOnce('356c91de-d2e6-42d6-a6f9-2d22b2dbdc41')): $__env->markAsRenderedOnce('356c91de-d2e6-42d6-a6f9-2d22b2dbdc41'); ?>
         <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet" />
         <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
         <style>
@@ -182,15 +182,7 @@
                             >
                                 Générer avec IA
                             </button>
-                            <button
-                                type="button"
-                                @click="$wire.saveAndSend()"
-                                :disabled="!$wire.form.content"
-                                aria-label="Sauvegarder et envoyer le contrat"
-                                class="inline-flex w-full justify-center rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-500 sm:w-auto"
-                            >
-                                Sauvegarder & Envoyer
-                            </button>
+                           
                             <button
                                 type="button"
                                 @click="$wire.saveContrat()"
