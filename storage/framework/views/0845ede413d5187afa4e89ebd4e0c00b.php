@@ -29,7 +29,7 @@
                         flex flex-col sm:flex-row items-center sm:items-start space-y-2 sm:space-y-0 sm:space-x-4">
                 <div class="flex-shrink-0">
                     <!--[if BLOCK]><![endif]--><?php if($prestation->artiste && $prestation->artiste->photo): ?>
-                        <img src="<?php echo e($prestation->artiste->photo); ?>" alt="<?php echo e($prestation->artiste->nom); ?>"
+                        <img src="<?php echo e(asset('storage/' . $prestation->artiste->photo)); ?>" alt="<?php echo e($prestation->artiste->nom); ?>"
                              class="w-12 h-12 rounded-full object-cover border-2"
                              style="border-color: <?php echo e($prestation->artiste->couleur ?? '#cbd5e0'); ?>;">
                     <?php else: ?>
@@ -63,7 +63,7 @@
                             <?php if($prestation->status == 'redigee'): ?> text-blue-600
                             <?php elseif($prestation->status == 'en cours de redaction'): ?> text-purple-600
                             <?php elseif($prestation->status == 'annulee'): ?> text-red-600
-                            <?php elseif($prestation->status == 'terminee'): ?> text-green-600
+                            <?php elseif($prestation->status == 'validee'): ?> text-green-600
                             <?php endif; ?>">
                             <?php echo e(ucfirst($prestation->status)); ?>
 

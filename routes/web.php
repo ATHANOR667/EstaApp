@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\ContratController;
-use App\Http\Controllers\DocuSignWebhookController;
+use App\Http\Controllers\ContratWebhookController\DocuSignWebhookController;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
@@ -63,6 +63,7 @@ Route::name('super-admin.')
                 Route::get('/','profileView')->name('profileView');
                 Route::get('/profile','profileView')->name('profileView');
                 Route::get('/manage-admins','manageAdminsView')->name('manageAdminsView');
+                Route::get('/manage-teams','manageTeamsView')->name('manageTeamsView');
             });
 
 

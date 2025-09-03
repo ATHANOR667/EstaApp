@@ -4,6 +4,7 @@ namespace App\Livewire\Admin\Calendar\Contrat;
 
 use App\Models\Contrat;
 use App\Services\DocuSignService;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -11,7 +12,7 @@ use Livewire\Component;
 class DocuSignSendModal extends Component
 {
     public bool $showModal = false;
-    public int|null $contratId = null;
+    public string|null $contratId = null;
     public string $method = '';
     public array $form = [
         'contractant_name' => '',
@@ -30,25 +31,27 @@ class DocuSignSendModal extends Component
     }
 
     #[On('send-by-email')]
-    public function openModalEmail(int $contratId , string  $warning = null): void
+    public function openModalEmail(string $contratId , string  $warning = null): void
     {
         $this->openModal($contratId, 'email', $warning);
     }
 
     #[On('send-by-sms')]
-    public function openModalSMS(int $contratId , string  $warning = null): void
+    public function openModalSMS(string $contratId , string  $warning = null): void
     {
         $this->openModal($contratId, 'sms', $warning);
     }
 
     #[On('send-by-whatsapp')]
-    public function openModalWhatsApp(int $contratId , string  $warning = null): void
+    public function openModalWhatsApp(string $contratId , string  $warning = null): void
     {
         $this->openModal($contratId, 'whatsapp', $warning);
     }
 
-    private function openModal(int $contratId, string $method , string $warning = null): void
+    private function openModal(string $contratId, string $method , string $warning = null): void
     {
+        Gate::authorize('send-contrat');
+
         $this->contratId = $contratId;
         $this->method = $method;
 
@@ -114,6 +117,8 @@ class DocuSignSendModal extends Component
 
     private function sendWithDocuSign(string $method): void
     {
+        Gate::authorize('send-contrat');
+
         $contrat = Contrat::findOrFail($this->contratId);
 
         // Mettre à jour contact_organisateur si modifié dans le formulaire

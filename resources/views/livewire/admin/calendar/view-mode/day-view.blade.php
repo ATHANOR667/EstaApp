@@ -28,7 +28,7 @@
                         flex flex-col sm:flex-row items-center sm:items-start space-y-2 sm:space-y-0 sm:space-x-4">
                 <div class="flex-shrink-0">
                     @if ($prestation->artiste && $prestation->artiste->photo)
-                        <img src="{{ $prestation->artiste->photo }}" alt="{{ $prestation->artiste->nom }}"
+                        <img src="{{ asset('storage/' . $prestation->artiste->photo) }}" alt="{{ $prestation->artiste->nom }}"
                              class="w-12 h-12 rounded-full object-cover border-2"
                              style="border-color: {{ $prestation->artiste->couleur ?? '#cbd5e0' }};">
                     @else
@@ -58,7 +58,7 @@
                             @if ($prestation->status == 'redigee') text-blue-600
                             @elseif ($prestation->status == 'en cours de redaction') text-purple-600
                             @elseif ($prestation->status == 'annulee') text-red-600
-                            @elseif ($prestation->status == 'terminee') text-green-600
+                            @elseif ($prestation->status == 'validee') text-green-600
                             @endif">
                             {{ ucfirst($prestation->status) }}
                         </span>

@@ -6,11 +6,14 @@ use App\Models\Artiste;
 use App\Models\Prestation;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
 class PrestationFormModal extends Component
 {
+
     public bool $showModal = false;
     public int|null $editingPrestationId = null;
     public string|null $initialDate = null;
@@ -53,15 +56,13 @@ class PrestationFormModal extends Component
 
     public string|null $overlappingWarning = null;
     public Collection $artistes;
-    protected $listeners = [
-        'open-prestation-form' => 'openModalForCreate',
-        'edit-prestation' => 'openModalForEdit',
-    ];
+
+
 
     public function mount(): void
     {
         $this->form['date_prestation'] = Carbon::now()->format('Y-m-d');
-        $this->artistes = Artiste::all();
+        $this->artistes = Auth::guard('admin')->user()->artistes;
 
         if ($this->editingPrestationId) {
             $this->loadPrestation();
@@ -132,7 +133,7 @@ class PrestationFormModal extends Component
             //'form.heure_fin_prevue' => 'required|date_format:H:i|after:form.heure_debut_prestation',
             'form.lieu_prestation' => 'required|string|max:255',
             'form.type_evenement' => 'required|string|max:255',
-            'form.status' => 'required|string|in:en cours de redaction,redigee',
+            'form.status' => 'required|string|in:en cours de redaction,validee',
             'form.nom_representant_legal_artiste' => 'nullable|string|max:255',
             'form.contact_artiste' => 'nullable|string|max:255',
             'form.contact_organisateur' => 'nullable|string|max:255',
@@ -182,6 +183,8 @@ class PrestationFormModal extends Component
     #[On('open-prestation-form')]
     public function openModalForCreate(string $date = null): void
     {
+        Gate::authorize('create-prestation');
+
         $this->resetForm();
         $this->editingPrestationId = null;
         $this->initialDate = $date;
@@ -194,6 +197,8 @@ class PrestationFormModal extends Component
     #[On('edit-prestation')]
     public function openModalForEdit(int $prestationId): void
     {
+        Gate::authorize('edit-prestation');
+
         $this->resetForm();
         $this->editingPrestationId = $prestationId;
         $this->initialDate = null;
@@ -203,6 +208,8 @@ class PrestationFormModal extends Component
 
     public function savePrestation(): void
     {
+
+        Gate::any(['create-prestation', 'edit-prestation']);
         $this->resetErrorBag();
         $this->overlappingWarning = null;
 

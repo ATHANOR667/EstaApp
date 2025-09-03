@@ -58,11 +58,12 @@ class Admin extends Authenticatable
             if (empty($admin->matricule)) {
                 $admin->matricule = Str::uuid();
             }
-
-           /* if (empty($admin->id)) {
-                $admin->id = Str::uuid();
-            }*/
         });
+    }
+
+    public function artistes(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Artiste::class, 'admin_artiste');
     }
 
 }

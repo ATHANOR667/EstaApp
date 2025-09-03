@@ -69,7 +69,7 @@
                                  style="background-color: {{ $bgColor }};"
                                  title="{{ $prestation->artiste->nom }}">
                                 @if ($artiste && $artiste->photo)
-                                    <img src="{{ $artiste->photo }}" alt="{{ $artiste->nom }}" class="w-full h-full object-cover">
+                                    <img src="{{ asset('storage/' . $artiste->photo) }}" alt="{{ $artiste->nom }}" class="w-full h-full object-cover">
                                 @else
                                     <span class="text-xs font-bold {{ $textColor }}">{{ substr($prestation->nom_artiste_groupe, 0, 1) }}</span>
                                 @endif

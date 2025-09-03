@@ -6,6 +6,7 @@ use App\Jobs\GenerateContractContent;
 use App\Models\Contrat;
 use Illuminate\Support\Facades\Auth ;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\On;
 use Livewire\Component;
@@ -15,7 +16,7 @@ class ContratFormModal extends Component
     public bool $showModal = false;
     public bool $showSendOptions = false;
     public int|null $prestationId = null;
-    public int|null $contratId = null;
+    public string|null $contratId = null;
     public int|null $userId = null;
 
     public array $form = [
@@ -74,6 +75,8 @@ class ContratFormModal extends Component
 
     public function generateContent(): void
     {
+        Gate::authorize('create-contrat');
+
         if (!$this->prestationId || !\App\Models\Prestation::find($this->prestationId)) {
             Log::error('Aucune prestation valide pour la génération', [
                 'prestationId' => $this->prestationId,
@@ -107,6 +110,8 @@ class ContratFormModal extends Component
     #[On('open-contrat-form')]
     public function openModal($prestationId, $generateWithAi = false): void
     {
+        Gate::authorize('create-contrat');
+
         $this->resetForm();
         $this->prestationId = $prestationId;
         $this->showModal = true;
@@ -121,8 +126,10 @@ class ContratFormModal extends Component
     }
 
     #[On('view-contrat')]
-    public function viewContrat(int $contratId): void
+    public function viewContrat(string $contratId): void
     {
+        Gate::authorize('see-contrat');
+
         $contrat = Contrat::findOrFail($contratId);
         $this->contratId = $contratId;
         $this->prestationId = $contrat->prestation_id;
@@ -138,8 +145,10 @@ class ContratFormModal extends Component
     }
 
     #[On('send-contrat')]
-    public function sendContrat(int $id): void
+    public function sendContrat(string $id): void
     {
+        Gate::authorize('send-contrat');
+
         $this->showSendOptions = true;
         $contrat = Contrat::findOrFail($id);
         $this->contratId = $id;
@@ -170,8 +179,10 @@ class ContratFormModal extends Component
     }
 
     #[On('edit-contrat')]
-    public function editContrat(int $contratId): void
+    public function editContrat(string $contratId): void
     {
+        Gate::authorize('edit-contrat');
+
         $contrat = Contrat::findOrFail($contratId);
         $this->contratId = $contratId;
         $this->prestationId = $contrat->prestation_id;
@@ -188,6 +199,7 @@ class ContratFormModal extends Component
 
     public function saveLogic($content = null): void
     {
+
         Log::info('Appel de la méthode saveContrat', ['prestationId' => $this->prestationId, 'contratId' => $this->contratId, 'contentProvided' => $content !== null]);
         if (!$this->prestationId || !\App\Models\Prestation::where('id', $this->prestationId)->exists()) {
             Log::error('Prestation ID manquant ou invalide', ['prestationId' => $this->prestationId]);
@@ -241,12 +253,15 @@ class ContratFormModal extends Component
 
     public function saveContrat($content = null): void
     {
+        Gate::any(['create-contrat' , 'edit-contrat']);
         $this->saveLogic($content);
         $this->closeModal();
     }
 
     public function saveAndSend(): void
     {
+        Gate::check(['create-contrat','send-contrat']);
+
         $this->saveLogic();
         if (!session()->has('error')) {
             $this->showSendOptions = true;
@@ -255,6 +270,8 @@ class ContratFormModal extends Component
 
     private function prepareSend(string $method): void
     {
+        Gate::authorize('send-contrat');
+
         if (Contrat::where('prestation_id', $this->prestationId)->where('status', 'pending')->exists()) {
             $warning = 'Un autre contrat est en attente de signature pour cette prestation.';
             $this->dispatch('send-by-' . $method, contratId: $this->contratId, warning: $warning);
@@ -300,6 +317,8 @@ class ContratFormModal extends Component
 
     public function deleteContrat(): void
     {
+        Gate::authorize('delete-contrat');
+
         $contrat = Contrat::findOrFail($this->contratId);
         if ($contrat->status != 'draft') {
             session()->flash('warning', 'Impossible de supprimer un contrat qui est sorti de votre brouillon.');

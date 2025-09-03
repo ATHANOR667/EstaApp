@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('contrats', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->foreignIdFor(\App\Models\Prestation::class);
             $table->text('content');
             $table->boolean('signature_artiste_representant')->nullable();

@@ -74,14 +74,14 @@
                                 <div class="mt-2 sm:mt-0 flex flex-wrap gap-2 justify-start sm:justify-end">
                                     
                                     <div class="flex gap-2">
-                                        <button wire:click="viewContrat(<?php echo e($contrat->id); ?>)" class="px-3 py-1 rounded-md bg-gray-500 text-white hover:bg-gray-600">Voir</button>
-                                        <button wire:click="editContrat(<?php echo e($contrat->id); ?>)" class="px-3 py-1 rounded-md bg-blue-500 text-white hover:bg-blue-600">Éditer</button>
+                                        <button wire:click="viewContrat('<?php echo e($contrat->id); ?>')" class="px-3 py-1 rounded-md bg-gray-500 text-white hover:bg-gray-600">Voir</button>
+                                        <button wire:click="editContrat('<?php echo e($contrat->id); ?>')" class="px-3 py-1 rounded-md bg-blue-500 text-white hover:bg-blue-600">Éditer</button>
                                     </div>
                                     <div class="flex gap-2">
                                         <!--[if BLOCK]><![endif]--><?php if($contrat->status == 'draft'): ?>
-                                            <button wire:click="sendContract(<?php echo e($contrat->id); ?>)" class="px-3 py-1 rounded-md bg-green-500 text-white hover:bg-green-600">Envoyer</button>
+                                            <button wire:click="sendContract('<?php echo e($contrat->id); ?>')" class="px-3 py-1 rounded-md bg-green-500 text-white hover:bg-green-600">Envoyer</button>
                                         <?php endif; ?><!--[if ENDBLOCK]><![endif]-->
-                                        <button wire:click="downloadPdf(<?php echo e($contrat->id); ?>)" class="px-3 py-1 rounded-md bg-indigo-500 text-white hover:bg-indigo-600">PDF</button>
+                                        <button wire:click="downloadPdf('<?php echo e($contrat->id); ?>')" class="px-3 py-1 rounded-md bg-indigo-500 text-white hover:bg-indigo-600">PDF</button>
                                     </div>
                                 </div>
                             </div>

@@ -8,12 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Str;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class Contrat extends Model
 {
     use HasFactory, SoftDeletes , Notifiable;
 
+    public $incrementing = false;
+    protected $keyType = 'string';
     const STATUSES = [
         'draft' => 'Brouillon',
         'pending' => 'En cours d\'envoi',
@@ -47,6 +50,19 @@ class Contrat extends Model
     public function versements(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(Versement::class);
+    }
+
+    protected static function boot(): void
+    {
+        parent::boot();
+
+
+        static::creating(function ($contrat) {
+
+            if (empty($contrat->id)) {
+                 $contrat->id = Str::uuid();
+            }
+        });
     }
 
     public function routeNotificationForMail($notification)

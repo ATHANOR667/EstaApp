@@ -46,6 +46,7 @@ class AuthController extends Controller
             return back()->with('error', 'Une erreur est survenue lors de l\'authentification');
         }
 
+
         if ($admin && Hash::check($request->input('password'), $admin->password)) {
             Auth::guard('admin')->login($admin);
             $request->session()->regenerate();

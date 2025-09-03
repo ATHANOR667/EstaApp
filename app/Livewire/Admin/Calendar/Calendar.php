@@ -5,6 +5,8 @@ namespace App\Livewire\Admin\Calendar;
 use App\Models\Prestation;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -32,6 +34,8 @@ class Calendar extends Component
     }
     public function mount(): void
     {
+        Gate::authorize('see-prestation');
+
         $this->currentDate = Carbon::now();
     }
 
@@ -59,8 +63,12 @@ class Calendar extends Component
                 $this->prestations =  collect();
         }
 
+        $admin = Auth::guard('admin')->user();
         $this->prestations = $query->whereBetween('date_prestation', [$start, $end])
             ->with('artiste')
+            ->whereHas('artiste', function ($query) use ($admin) {
+                $query->whereIn('id', $admin->artistes()->pluck('artistes.id'));
+            })
             ->orderBy('date_prestation')
             ->orderBy('heure_debut_prestation')
             ->get();

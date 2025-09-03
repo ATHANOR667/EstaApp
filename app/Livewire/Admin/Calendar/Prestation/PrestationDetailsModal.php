@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin\Calendar\Prestation;
 
 use App\Models\Prestation;
+use Illuminate\Support\Facades\Gate;
 use Livewire\Attributes\On;
 use Livewire\Component;
 
@@ -81,6 +82,8 @@ class PrestationDetailsModal extends Component
 
     public function deletePrestation(): void
     {
+        Gate::authorize('delete-prestation');
+
         try {
 
             if ($this->prestation->contrats->where('status', '!=','draft')->isNotEmpty()) {

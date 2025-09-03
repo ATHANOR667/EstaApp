@@ -22,4 +22,12 @@ class BaseController extends Controller
                          'superAdmin' => Auth::guard('super-admin')->user(),
                      ]);
     }
+
+    public function manageTeamsView(): \Illuminate\Contracts\View\View|\Illuminate\Foundation\Application|\Illuminate\Contracts\View\Factory
+    {
+        return view('super-admin.pages.manage-teams',
+                     [
+                         'superAdmin' => Auth::guard('super-admin')->user(),
+                     ]);
+    }
 }

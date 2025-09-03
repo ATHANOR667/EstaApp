@@ -429,6 +429,7 @@ class DocuSignService
                 ]);
             }
             $prestation->contact_organisateur = $contrat->prestation->contact_organisateur;
+            $prestation->status = 'validee';
             $prestation->save();
         }
     }

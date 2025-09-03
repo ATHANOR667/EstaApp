@@ -9,6 +9,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use DocuSign\eSign\Client\ApiClient;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\URL;
 use Livewire\Attributes\On;
@@ -26,6 +27,8 @@ class ContratListModal extends Component
     #[On('open-contrat-list')]
     public function openModal(int $prestationId = null): void
     {
+        Gate::authorize('see-contrat');
+
         if (!$prestationId) {
             session()->flash('error', 'Aucune prestation sélectionnée.');
             return;
@@ -67,6 +70,8 @@ class ContratListModal extends Component
 
     public function openContratForm($prestationId): void
     {
+        Gate::authorize('create-contrat');
+
         if (!$prestationId) {
             session()->flash('error', 'Aucune prestation sélectionnée.');
             return;
@@ -76,6 +81,8 @@ class ContratListModal extends Component
 
     public function openContratFormWithAi($prestationId): void
     {
+        Gate::authorize('create-contrat');
+
         if (!$prestationId) {
             session()->flash('error', 'Aucune prestation sélectionnée.');
             return;
@@ -85,6 +92,7 @@ class ContratListModal extends Component
 
     public function viewContrat($contratId): void
     {
+        Gate::authorize('see-contrat');
         if (!$contratId) {
             session()->flash('error', 'Aucun contrat sélectionné.');
             return;
@@ -94,6 +102,8 @@ class ContratListModal extends Component
 
     public function editContrat($contratId): void
     {
+        Gate::authorize('edit-contrat');
+
         if (!$contratId) {
             session()->flash('error', 'Aucun contrat sélectionné.');
             return;
@@ -110,13 +120,16 @@ class ContratListModal extends Component
         $this->customMessage = '';
     }
 
-    public function sendContract(int $contratId): void
+    public function sendContract(string $contratId): void
     {
+        Gate::authorize('send-contrat');
         $this->dispatch('send-contrat', id: $contratId);
     }
 
     public function downloadPdf(Contrat $contrat  ): \SplFileObject | \Symfony\Component\HttpFoundation\StreamedResponse | null
     {
+        Gate::authorize('download-contrat');
+
         try {
             if ($contrat->status === 'signed' && $contrat->docusign_envelope_id) {
 

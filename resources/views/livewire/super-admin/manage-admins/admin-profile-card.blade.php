@@ -1,6 +1,4 @@
 <div>
-    {{-- Do your work, then step back. --}}
-
     <div x-data="{ show: @entangle('showModal') }" x-show="show" x-cloak class="fixed inset-0 z-50 overflow-y-auto p-4 sm:p-6 lg:p-8">
         <div class="flex items-center justify-center min-h-screen">
             {{-- Overlay --}}
@@ -10,7 +8,7 @@
 
             {{-- Modal Panel --}}
             <div x-show="show" x-transition:enter="ease-out duration-300"
-                 x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                 x-transition:enter-start="opacity-аши translate-y-4 sm:translate-y-0 sm:scale-95"
                  x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
                  x-transition:leave="ease-in duration-200"
                  x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
@@ -208,7 +206,9 @@
                                     </div>
                                     <div class="mt-3 space-y-2">
                                         <div>
-                                            <label for="newPieceIdentiteRecto" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nouveau Recto (optionnel)</label>
+                                            <label for="new
+
+PieceIdentiteRecto" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Nouveau Recto (optionnel)</label>
                                             <input type="file" id="newPieceIdentiteRecto" wire:model="newPieceIdentiteRecto"
                                                    class="block w-full text-base text-gray-500 file:mr-4 file:py-2 file:px-4
                                                   file:rounded-md file:border-0 file:text-sm file:font-semibold
@@ -270,6 +270,37 @@
                             @error('selectedRoles.*') <p class="mt-1 text-sm text-red-600 dark:text-red-400">{{ $message }}</p> @enderror
                         </div>
 
+                        <!-- START: Affichage des équipes d'artistes -->
+                        <div class="mb-6 border-t pt-6 border-gray-200 dark:border-gray-700">
+                            <h4 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Équipes d'Artistes</h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                                @forelse ($admin->artistes as $artiste)
+                                    <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg shadow-sm flex items-center space-x-4">
+                                        {{-- Photo de l'artiste --}}
+                                        @if ($artiste->photo)
+                                            <img src="{{ asset('storage/' . $artiste->photo) }}" class="h-16 w-16 object-cover rounded-full shadow-md" alt="Photo de {{ $artiste->nom }}">
+                                        @else
+                                            <div class="h-16 w-16 bg-gray-200 dark:bg-gray-600 rounded-full flex-shrink-0 flex items-center justify-center text-gray-500 dark:text-gray-300 font-bold">
+                                                {{ strtoupper(substr($artiste->nom, 0, 1)) }}
+                                            </div>
+                                        @endif
+
+                                        {{-- Infos de l'artiste --}}
+                                        <div class="flex-1">
+                                            <div class="flex items-center space-x-2">
+                                                <span class="text-sm font-semibold text-gray-900 dark:text-gray-100">Artiste:</span>
+                                                <span class="text-sm font-medium text-gray-600 dark:text-gray-300">{{ $artiste->nom }}</span>
+                                                <span class="h-3 w-3 rounded-full" style="background-color: {{ $artiste->couleur ?? '#9ca3af' }}"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @empty
+                                    <p class="text-gray-500 dark:text-gray-400 col-span-full">L'administrateur n'est lié à aucune équipe d'artiste.</p>
+                                @endforelse
+                            </div>
+                        </div>
+                        <!-- END: Affichage des équipes d'artistes -->
+
                         {{-- Boutons d'action --}}
                         <div class="flex justify-end space-x-4 mt-6">
                             <button type="button" wire:click="closeModal"
@@ -277,7 +308,6 @@
                                    focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800">
                                 Annuler
                             </button>
-                            {{-- Bouton pour générer le PDF --}}
                             <button type="button" wire:click="generatePdf"
                                     class="px-6 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700
                                    focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:focus:ring-offset-gray-800">
@@ -298,5 +328,4 @@
             </div>
         </div>
     </div>
-
 </div>

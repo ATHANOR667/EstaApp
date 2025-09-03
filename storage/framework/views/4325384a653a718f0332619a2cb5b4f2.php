@@ -71,7 +71,7 @@
                                  style="background-color: <?php echo e($bgColor); ?>;"
                                  title="<?php echo e($prestation->artiste->nom); ?>">
                                 <!--[if BLOCK]><![endif]--><?php if($artiste && $artiste->photo): ?>
-                                    <img src="<?php echo e($artiste->photo); ?>" alt="<?php echo e($artiste->nom); ?>" class="w-full h-full object-cover">
+                                    <img src="<?php echo e(asset('storage/' . $artiste->photo)); ?>" alt="<?php echo e($artiste->nom); ?>" class="w-full h-full object-cover">
                                 <?php else: ?>
                                     <span class="text-xs font-bold <?php echo e($textColor); ?>"><?php echo e(substr($prestation->nom_artiste_groupe, 0, 1)); ?></span>
                                 <?php endif; ?><!--[if ENDBLOCK]><![endif]-->

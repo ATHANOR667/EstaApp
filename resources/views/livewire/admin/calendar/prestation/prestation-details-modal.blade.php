@@ -53,7 +53,7 @@
                         <p class="text-sm text-gray-600 dark:text-gray-300">Lieu: {{ $prestation->lieu_prestation }}</p>
                         <p class="text-sm text-gray-600 dark:text-gray-300">Statut de la prestation:
                             <span class="font-medium
-                                {{ $prestation->status == 'Accepté' ? 'text-green-700 dark:text-green-200' : '' }}
+                                {{ $prestation->status == 'validee' ? 'text-green-700 dark:text-green-200' : '' }}
                                 {{ $prestation->status == 'En attente de réponse' ? 'text-yellow-700 dark:text-yellow-200' : '' }}
                                 {{ $prestation->status == 'Rédigé' ? 'text-blue-700 dark:text-blue-200' : '' }}
                                 {{ $prestation->status == 'Rejeté' ? 'text-red-700 dark:text-red-200' : '' }}

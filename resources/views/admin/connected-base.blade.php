@@ -11,14 +11,8 @@
             csrfToken: '{{ csrf_token() }}'
         };
     </script>
-    <title>Admin Panel</title>
-    {{ Vite::useHotFile(false) }}
-    {{ Vite::useBuildDirectory('build') }}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <title>@yield('title')</title>
-
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>tailwind.config = {darkMode: 'class',}</script>
 </head>
 
 @livewireStyles

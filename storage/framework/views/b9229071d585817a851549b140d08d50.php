@@ -61,7 +61,7 @@
                         <p class="text-sm text-gray-600 dark:text-gray-300">Lieu: <?php echo e($prestation->lieu_prestation); ?></p>
                         <p class="text-sm text-gray-600 dark:text-gray-300">Statut de la prestation:
                             <span class="font-medium
-                                <?php echo e($prestation->status == 'Accepté' ? 'text-green-700 dark:text-green-200' : ''); ?>
+                                <?php echo e($prestation->status == 'validee' ? 'text-green-700 dark:text-green-200' : ''); ?>
 
                                 <?php echo e($prestation->status == 'En attente de réponse' ? 'text-yellow-700 dark:text-yellow-200' : ''); ?>
 

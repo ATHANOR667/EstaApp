@@ -49,9 +49,6 @@ class SuperAdmin extends Authenticatable
                 throw new \Exception('Impossible de créer plus d’un SuperAdmin.');
             }
 
-           /* if (empty($superAdmin->id)) {
-                $superAdmin->id = Str::uuid();
-            }*/
 
         });
     }

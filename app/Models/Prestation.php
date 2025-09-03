@@ -47,7 +47,6 @@ class Prestation extends Model
         'responsabilite_force_majeure',
         'assurance_securite_lieu_par',
         'engagement_ponctualite_presence',
-        // Les champs de signature sont retirés de ce modèle
         'observations_particulieres',
         'status',
     ];
@@ -59,8 +58,8 @@ class Prestation extends Model
      */
     protected $casts = [
         'date_prestation' => 'date',
-        'heure_debut_prestation' => 'datetime', // Carbon object for time
-        'heure_fin_prevue' => 'datetime', // Carbon object for time
+        'heure_debut_prestation' => 'datetime',
+        'heure_fin_prevue' => 'datetime',
         'date_limite_paiement_solde' => 'date',
         'frais_annexes_transport' => 'boolean',
         'frais_annexes_hebergement' => 'boolean',

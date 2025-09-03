@@ -84,7 +84,7 @@
         <p>Pour des raisons de sécurité, ne partagez jamais ce code avec qui que ce soit.</p>
     </div>
     <div class="footer">
-        <p>&copy; <?php echo e(date('Y')); ?> Event App. Tous droits réservés.</p>
+        <p>&copy; <?php echo e(date('Y')); ?> Esta App. Tous droits réservés.</p>
     </div>
 </div>
 </body>

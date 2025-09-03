@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('versements', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(\App\Models\Contrat::class);
-            $table->decimal('montant', 10, 2);
-            $table->date('date_versement');
-            $table->text('notes')->nullable();
+            $table->string('montant', 10, 2);
+            $table->string('date_versement');
+            $table->string('notes')->nullable();
             $table->string('moyen_paiement')->nullable();
 
             $table->softDeletes();

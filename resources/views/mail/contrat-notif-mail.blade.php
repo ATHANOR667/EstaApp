@@ -82,11 +82,11 @@
             <p><strong>ID du contrat :</strong> {{ $contrat->id }}</p>
         </div>
 
-        <div class="button-container">
+       {{-- <div class="button-container">
             <a href="{{ url('/contrats/'.$contrat->id) }}" class="button">
                 Voir le contrat
             </a>
-        </div>
+        </div>--}}
     </div>
     <div class="footer">
         <p>Cet e-mail a été envoyé automatiquement. Veuillez ne pas y répondre.</p>

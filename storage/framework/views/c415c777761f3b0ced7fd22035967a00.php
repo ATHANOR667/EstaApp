@@ -41,6 +41,7 @@
         </div>
 
         <div class="hidden md:flex items-center space-x-6">
+            <a href="<?php echo e(route('super-admin.manageTeamsView')); ?>" class="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200">Teams</a>
             <a href="<?php echo e(route('super-admin.manageAdminsView')); ?>" class="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200">Admins</a>
             <a href="<?php echo e(route('super-admin.profileView')); ?>" class="text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200">Profil</a>
 
@@ -67,6 +68,7 @@
     <div x-show="sidebarOpen" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 -translate-y-4" x-transition:enter-end="opacity-100 translate-y-0"
          x-transition:leave="transition ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-4"
          class="md:hidden px-4 py-2 space-y-2 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+        <a href="<?php echo e(route('super-admin.manageTeamsView')); ?>" class="block text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 py-1">Teams</a>
         <a href="<?php echo e(route('super-admin.manageAdminsView')); ?>" class="block text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 py-1">Admins</a>
         <a href="<?php echo e(route('super-admin.profileView')); ?>" class="block text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors duration-200 py-1">Profil</a>
         <form action="<?php echo e(route('super-admin.auth.connected.logout')); ?>" method="POST" class="pt-2">
@@ -131,6 +133,8 @@
     </div>
 
     <?php echo $__env->yieldContent('content'); ?>
+    <?php echo $__env->make('livewire.toast', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?>
+
 </main>
 
 <footer class="bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 p-4 text-center shadow-inner mt-auto transition-colors duration-300 ease-in-out">
